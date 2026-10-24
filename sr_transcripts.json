@@ -1,0 +1,9 @@
+{
+  "updated": "2026-10-24T21:14:22.473147+02:00",
+  "episodes": [],
+  "warnings": [
+    "Ekot: ParseError: no element found: line 23830, column 37",
+    "P1 Morgon: TypeError: open() got an unexpected keyword argument 'metadata_errors'",
+    "Studio Ett: ParseError: unclosed token: line 23305, column 6"
+  ]
+}
