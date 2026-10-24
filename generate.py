@@ -82,16 +82,16 @@ def same(a,b):
 FOREIGN={"BBC","New York Times","Financial Times","Der Spiegel","CNN","Washington Post","The Guardian"}
 def valid(x):
  d=x["desc"]
- return len(d)>=85 and SequenceMatcher(None,x["title"].lower(),d.lower()).ratio()<.78 and not d.lower().startswith(x["title"].lower()[:40])
+ return len(d)>=65 and SequenceMatcher(None,x["title"].lower(),d.lower()).ratio()<.78 and not d.lower().startswith(x["title"].lower()[:40])
 def score(x):
  hay=x["title"]+" "+x["desc"]
- return (5 if x["source"]=="Ekot" else 3)+(5 if IMPORTANT.search(hay) else 0)+min(len(x["desc"])//140,4)-(15 if SPORT.search(x["title"]) or GOSSIP.search(x["title"]) else 0)
+ return 3+(9 if IMPORTANT.search(x["title"]) else 4 if IMPORTANT.search(hay) else 0)+(5 if WORLD.search(x["title"]) or POLITICS.search(x["title"]) else 0)+min(len(x["desc"])//140,3)-(25 if SPORT.search(x["title"]) or GOSSIP.search(x["title"]) else 0)-(18 if re.search(r"influencer|influerare|filmroll|selftape|novell|recension|krönika",x["title"],re.I) else 0)
 def section(x):
  hay=x["title"]+" "+x["desc"]
  if LOCAL.search(hay) or x["source"]=="SVT Öst":return "Östergötland"
  if PRISON.search(hay):return "Kriminalvården"
- if CULTURE.search(hay):return "Kultur och litteratur"
  if WORLD.search(hay):return "Internationell utblick"
+ if CULTURE.search(hay):return "Kultur och litteratur"
  if POLITICS.search(hay):return "Politik och ekonomi"
  return "Sverige och världen"
 def detail(x):
