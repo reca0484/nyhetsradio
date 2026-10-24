@@ -79,7 +79,6 @@ def main():
             episode["segments_count"] = len(segments)
             # Representative excerpts only, not an invented editorial summary.
             episode["excerpts"] = matches[:35]
-            episode.pop("audio", None)
             result["episodes"].append(episode)
         except Exception as exc:
             result["warnings"].append(source + ": " + type(exc).__name__ + ": " + str(exc)[:160])
