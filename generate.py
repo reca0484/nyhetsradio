@@ -1,4 +1,5 @@
 """Gratis nyhetsöversikt från offentliga RSS-flöden. Ingen AI eller betaltjänst."""
+from difflib import SequenceMatcher
 import datetime, email.utils, html, json, os, re, urllib.request, xml.etree.ElementTree as ET
 from zoneinfo import ZoneInfo
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -88,17 +89,34 @@ for x in unique:
  x["score"]=score(x)
  sections[x["section"]].append(x)
 for section in sections:sections[section].sort(key=lambda x:(x["score"],x["date"]),reverse=True)
+def related(a,b):
+ if a["source"]==b["source"]:return False
+ ta=set(re.findall(r"[a-zåäö]{4,}",a["title"].lower()))
+ tb=set(re.findall(r"[a-zåäö]{4,}",b["title"].lower()))
+ common=ta&tb
+ return len(common)>=3 and len(common)/max(1,min(len(ta),len(tb)))>=0.7 and SequenceMatcher(None,a["title"].lower(),b["title"].lower()).ratio()>0.45
+def combined(x,others):
+ result=sentence(x)
+ for y in others[:3]:
+  if SequenceMatcher(None,x["desc"].lower(),y["desc"].lower()).ratio()>0.75:continue
+  detail=y["desc"][:450].strip()
+  if detail:result+=" "+y["source"]+" tillägger: "+detail
+ return result
 months=["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"]
 lines=[f"{NOW.day} {months[NOW.month-1]} {NOW.year}."]
 selected=[]
+used=set()
 limits={"Sverige och världen":7,"Östergötland":6,"Kriminalvården":5,"Politik och ekonomi":6,"Kultur och litteratur":3}
 for section in ["Sverige och världen","Politik och ekonomi","Östergötland","Kriminalvården","Kultur och litteratur"]:
  chosen=[x for x in sections[section] if x["score"]>=5 and len(x["desc"])>=75 and x["desc"].lower()!=x["title"].lower()][:limits[section]]
  if not chosen: continue
  lines.append("\n"+section+".")
  for x in chosen:
-  lines.append(sentence(x))
-  selected.append(x)
+  if x["link"] in used:continue
+  related_items=[y for y in unique if y["link"] not in used and y["link"]!=x["link"] and related(x,y) and category(y) not in ("Sport","Nöje")][:3]
+  lines.append(combined(x,related_items))
+  selected.extend([x]+related_items)
+  used.update(y["link"] for y in [x]+related_items)
 with open("report.json","w",encoding="utf-8") as f:
  json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\n".join(lines),"items":selected,"warnings":errors,"method":"Gratis prioriterad RSS-översikt med källornas egna kortbeskrivningar; inte AI-analys eller fullständig programsammanfattning"},f,ensure_ascii=False,indent=2)
 print(f"Skrev {len(selected)} prioriterade nyhetsinslag från {len(FEEDS)-len(errors)} källor.")
