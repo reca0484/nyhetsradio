@@ -23,7 +23,9 @@ FEEDS={
  "Financial Times":"https://www.ft.com/rss/home",
  "Der Spiegel":"https://news.google.com/rss/search?q=when%3A2d+site%3Aspiegel.de%2Finternational&hl=en-US&gl=US&ceid=US%3Aen",
  "CNN":"https://news.google.com/rss/search?q=when%3A2d+site%3Acnn.com&hl=en-US&gl=US&ceid=US%3Aen",
- "Publikt":"https://www.publikt.se/feeds/alla",
+ "Publikt":"https://news.google.com/rss/search?q=site%3Apublikt.se+when%3A2d&hl=sv&gl=SE&ceid=SE%3Asv",
+ "Corren":"https://news.google.com/rss/search?q=site%3Acorren.se+when%3A2d&hl=sv&gl=SE&ceid=SE%3Asv",
+ "Norrköpings Tidningar":"https://news.google.com/rss/search?q=site%3Ant.se+when%3A2d&hl=sv&gl=SE&ceid=SE%3Asv",
  "Washington Post":"https://news.google.com/rss/search?q=when%3A2d+site%3Awashingtonpost.com&hl=en-US&gl=US&ceid=US%3Aen",
  "The Guardian":"https://www.theguardian.com/world/rss",
  "P1 Morgon":"https://news.google.com/rss/search?q=site%3Asverigesradio.se+%22P1-morgon%22+when%3A2d&hl=sv&gl=SE&ceid=SE%3Asv",
@@ -87,7 +89,7 @@ def score(x):
  return 3+(9 if IMPORTANT.search(x["title"]) else 4 if IMPORTANT.search(hay) else 0)+(5 if WORLD.search(x["title"]) or POLITICS.search(x["title"]) else 0)+min(len(x["desc"])//140,3)-(25 if SPORT.search(x["title"]) or GOSSIP.search(x["title"]) else 0)-(18 if re.search(r"influencer|influerare|filmroll|selftape|novell|recension|krönika",x["title"],re.I) else 0)
 def section(x):
  hay=x["title"]+" "+x["desc"]
- if LOCAL.search(hay) or x["source"]=="SVT Öst":return "Östergötland"
+ if LOCAL.search(hay) or x["source"] in ("SVT Öst","Corren","Norrköpings Tidningar","P4 Östergötland"):return "Östergötland"
  if PRISON.search(hay):return "Kriminalvården"
  if x["source"] in FOREIGN or WORLD.search(hay):return "Internationell utblick"
  if CULTURE.search(hay):return "Kultur och litteratur"
@@ -95,7 +97,7 @@ def section(x):
  return "Sverige och världen"
 def detail(x):
  d=x["desc"].strip()
- if x["source"] in ("Ekot","P1 Morgon","Studio Ett") and (SequenceMatcher(None,x["title"].lower(),d.lower()).ratio()>.65 or len(d)<55):return "Nyheten finns hos Sveriges Radio. Mer information i källänken."
+ if x["source"] in ("Ekot","P1 Morgon","Studio Ett") and (SequenceMatcher(None,x["title"].lower(),d.lower()).ratio()>.65 or len(d)<55):return ""
  if len(d)>620:
   chunk=d[:620];end=max(chunk.rfind("."),chunk.rfind("!"),chunk.rfind("?"))
   d=chunk[:end+1] if end>260 else chunk.rsplit(" ",1)[0]+"."
@@ -107,6 +109,7 @@ def story(x,group):
   d=detail(y)
   if any(SequenceMatcher(None,d.lower(),old.lower()).ratio()>.63 for old in seen):continue
   if len(words(d)) and any(len(words(d)&words(old))/max(1,min(len(words(d)),len(words(old))))>.83 for old in seen):continue
+  if not d:continue
   out.append(y["source"]+(" rapporterar: " if not seen else " tillägger: ")+d)
   seen.append(d)
   if len(seen)>=2:break
@@ -137,23 +140,8 @@ def add_group(g,heading):
  selected.extend(g);used.add(id(g));source_usage[g[0]["source"]]+=1
  return True
 emitted=set()
-# SR:s Google News-poster kan ha kort eller duplicerad beskrivning.
-# Välj därför verifierbara rubriker med källänk direkt från hämtade poster.
-# Lägg aldrig till påhittad brödtext eller låtsas att ljudet är transkriberat.
-for sr_source,quota in (("Ekot",3),("P1 Morgon",2),("Studio Ett",2)):
- sr_items=[x for x in items if x["source"]==sr_source and x["title"] and x["link"] and not SPORT.search(x["title"]) and not GOSSIP.search(x["title"])]
- sr_items.sort(key=lambda x:(score(x),x["date"]),reverse=True)
- sr_seen=set()
- for x in sr_items:
-  key=tuple(sorted(words(x["title"])))
-  if key in sr_seen:continue
-  sr_seen.add(key)
-  if source_usage[sr_source]>=quota:break
-  heading=section(x)
-  if heading not in emitted:lines.append("\\n"+heading+".");emitted.add(heading)
-  lines.append(x["title"].rstrip(".")+". Sveriges Radio, "+sr_source+". Läs originalartikeln via källänken.")
-  selected.append(x)
-  source_usage[sr_source]+=1
+# Korta rubriknotiser utan sakuppgifter ska inte fylla ut radioreportaget.
+# Radions faktiska transkriberingar läggs till separat nedan.
 for heading in ("Sverige och världen","Politik och ekonomi","Östergötland","Kriminalvården","Kultur och litteratur"):
  pool=[g for g in buckets[heading] if not (g[0]["source"] in FOREIGN or WORLD.search(g[0]["title"]+" "+g[0]["desc"])) or heading in ("Östergötland","Kriminalvården")]
  for _ in range(limits[heading]):
@@ -185,8 +173,8 @@ try:
   excerpts=[e["text"] for e in ep.get("excerpts",[]) if len(e.get("text",""))>45]
   if not excerpts:continue
   sr_audio.append(ep)
-  lines.append("\\nFrån Sveriges Radio: "+ep["source"]+".")
-  lines.append("Ur den automatiska transkriberingen av "+ep["title"]+": "+" ".join(excerpts[:5]))
+  lines.append("\\n"+ep["source"]+": "+ep["title"]+".")
+  lines.append("I sändningen behandlas följande: "+" ".join(excerpts[:4]))
 except (OSError,ValueError,KeyError) as exc:
  sr_audio_warnings.append("Ingen användbar SR-transkribering: "+type(exc).__name__)
 
@@ -198,7 +186,7 @@ if market:
  if x not in selected:selected.append(x)
 podcast_episodes=[dict(source=x["source"],title=x["title"],link=x["link"],date=x["date"],description=x["desc"]) for x in items if x["source"].endswith(" podd")]
 with open("report.json","w",encoding="utf-8") as f:
- json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\n".join(lines),"items":selected,"warnings":errors,"source_counts":{name:sum(x["source"]==name for x in selected) for name in FEEDS},"feed_counts":{name:sum(x["source"]==name for x in items) for name in FEEDS},"unavailable_sources":[name for name in FEEDS if not any(x["source"]==name for x in items)],"sr_audio_episodes":[{"source":x["source"],"title":x["title"],"url":x["link"],"date":x["date"]} for x in items if x["source"].endswith(" podd")][:20],"quality_check":{"international_stories":sum(1 for x in selected if x["source"] in FOREIGN),"market_alert":bool(market),"sources_represented":len(set(x["source"] for x in selected))},"languages":"Svenska, engelska och tyska i original","sr_podcast_episodes":podcast_episodes[:30],"sr_audio_used":len(sr_audio),"sr_audio_warnings":sr_audio_warnings,"sr_podcast_note":"Bevakning av Ekot, hela P1 Morgon och Studio Ett via tillgängliga programbeskrivningar och länkar; ingen ljudtranskribering.","method":"Redaktionellt prioriterad regelbaserad RSS-översikt, inga AI-genererade eller verifierade helartikelreferat."},f,ensure_ascii=False,indent=2)
+ json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\n".join(lines),"items":selected,"warnings":errors,"source_counts":{name:sum(x["source"]==name for x in selected) for name in FEEDS},"source_audit":{name:{"fetched":sum(x["source"]==name for x in items),"eligible":sum(x["source"]==name and valid(x) and score(x)>0 for x in items),"included":sum(x["source"]==name for x in selected),"rejected_short_or_duplicate_description":sum(x["source"]==name and not valid(x) for x in items),"rejected_low_priority":sum(x["source"]==name and valid(x) and score(x)<=0 for x in items),"eligible_but_not_selected":sum(x["source"]==name and valid(x) and score(x)>0 for x in items)-sum(x["source"]==name for x in selected)} for name in FEEDS},"feed_counts":{name:sum(x["source"]==name for x in items) for name in FEEDS},"unavailable_sources":[name for name in FEEDS if not any(x["source"]==name for x in items)],"sr_audio_episodes":[{"source":x["source"],"title":x["title"],"url":x["link"],"date":x["date"]} for x in items if x["source"].endswith(" podd")][:20],"quality_check":{"international_stories":sum(1 for x in selected if x["source"] in FOREIGN),"market_alert":bool(market),"sources_represented":len(set(x["source"] for x in selected))},"languages":"Svenska, engelska och tyska i original","sr_podcast_episodes":podcast_episodes[:30],"sr_audio_used":len(sr_audio),"sr_audio_warnings":sr_audio_warnings,"sr_podcast_note":"Radioreferat baseras på automatiskt transkriberade ljudavsnitt när tillgängliga; transkriberingsfel redovisas.","method":"Redaktionellt prioriterad regelbaserad RSS-översikt, inga AI-genererade eller verifierade helartikelreferat."},f,ensure_ascii=False,indent=2)
 print("Rapport klar:",len(selected),"källnotiser;",{name:sum(x["source"]==name for x in selected) for name in FEEDS})
 print("KÄLLOR UTAN NYHETER:",[name for name in FEEDS if not any(x["source"]==name for x in items)])
 print("KÄLLFEL:",errors)
