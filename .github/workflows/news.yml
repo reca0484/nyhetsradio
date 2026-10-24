@@ -31,5 +31,6 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add report.json sr_transcripts.json
+          git add report.json
+          if test -f sr_transcripts.json; then git add sr_transcripts.json; fi
           if ! git diff --cached --quiet; then git commit -m 'Uppdatera dagens nyheter'; git push; fi
