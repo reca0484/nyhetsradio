@@ -14,6 +14,14 @@ FEEDS={
  "SVT":"https://www.svt.se/nyheter/rss.xml",
  "SVT Öst":"https://www.svt.se/nyheter/lokalt/ost/rss.xml",
  "DN":"https://www.dn.se/rss/",
+ "BBC":"https://feeds.bbci.co.uk/news/world/rss.xml",
+ "New York Times":"https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+ "Financial Times":"https://www.ft.com/rss/home",
+ "Der Spiegel":"https://www.spiegel.de/international/index.rss",
+ "CNN":"https://rss.cnn.com/rss/edition_world.rss",
+ "Washington Post":"https://feeds.washingtonpost.com/rss/world",
+ "The Guardian":"https://www.theguardian.com/world/rss",
+ "P1 Morgon":"https://api.sr.se/api/rss/program/1602",
 }
 LOCAL=re.compile(r"östergöt|linköping|norrköping|motala|mjölby|finspång|vadstena|söderköping|kinda|åtvidaberg|valdemarsvik|ydre|boxholm|ödeshög",re.I)
 PRISON=re.compile(r"kriminalvård|anstalt|häkte|fängelse|intagen|fångtransport|frihetsberöv",re.I)
@@ -60,6 +68,7 @@ def same(a,b):
  wa,wb=words(a["title"]),words(b["title"])
  common=len(wa&wb)
  return (common>=3 and common/max(1,min(len(wa),len(wb)))>=.63) or (common>=2 and SequenceMatcher(None,a["title"].lower(),b["title"].lower()).ratio()>=.76)
+FOREIGN={"BBC","New York Times","Financial Times","Der Spiegel","CNN","Washington Post","The Guardian"}
 def valid(x):
  d=x["desc"]
  return len(d)>=85 and SequenceMatcher(None,x["title"].lower(),d.lower()).ratio()<.78 and not d.lower().startswith(x["title"].lower()[:40])
@@ -93,7 +102,7 @@ def story(x,group):
  return " ".join(out)
 
 # Samla händelser en gång globalt, så att samma nyhet inte kommer i flera avsnitt.
-candidates=sorted([x for x in items if valid(x)],key=lambda x:(score(x),x["date"]),reverse=True)
+candidates=sorted([x for x in items if valid(x) and x["source"] not in FOREIGN],key=lambda x:(score(x),x["date"]),reverse=True)
 groups=[]
 for x in candidates:
  match=next((g for g in groups if same(x,g[0])),None)
@@ -118,13 +127,16 @@ def add_group(g,heading):
  return True
 emitted=set()
 for heading in ("Sverige och världen","Politik och ekonomi","Östergötland","Kriminalvården","Kultur och litteratur"):
- for g in buckets[heading][:limits[heading]]:add_group(g,heading)
+ for g in buckets[heading]:
+  if WORLD.search(g[0]["title"]+" "+g[0]["desc"]) and heading not in ("Östergötland","Kriminalvården"):continue
+  if sum(id(z) in used for z in buckets[heading])>=limits[heading]:break
+  add_group(g,heading)
 
 # Internationell utblick ska alltid vara en egen del och får hämta relevanta
 # världshändelser även från andra rubrikgrupper, men aldrig upprepa en händelse.
 world_groups=[g for g in groups if WORLD.search(g[0]["title"]+" "+g[0]["desc"]) and id(g) not in used]
 world_groups.sort(key=lambda g:(score(g[0]),g[0]["date"]),reverse=True)
-for g in world_groups[:5]:add_group(g,"Internationell utblick")
+for g in world_groups[:7]:add_group(g,"Internationell utblick")
 if "Internationell utblick" not in emitted:
  lines.append("\nInternationell utblick. De tillgängliga svenska nyhetsflödena innehöll inga ytterligare självständiga internationella händelser med tillräcklig bakgrund för en tillförlitlig sammanfattning.")
 
