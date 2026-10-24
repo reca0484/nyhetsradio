@@ -8,7 +8,7 @@ NOW=datetime.datetime.now(ZoneInfo("Europe/Stockholm"))
 if os.getenv("SCHEDULED")=="1" and NOW.hour!=11:
  print("Utanför klockan 11 svensk tid.");raise SystemExit(0)
 
-# Svenska redaktioner ger svenska texter. Utländska RSS-texter läses inte upp oöversatta.
+# Originalspråk används: svenska, engelska och tyska. Källorna bedöms efter innehåll.
 FEEDS={
  "Ekot":"https://api.sr.se/api/rss/program/83",
  "SVT":"https://www.svt.se/nyheter/rss.xml",
@@ -18,13 +18,6 @@ FEEDS={
  "Sydsvenskan":"https://www.sydsvenskan.se/feeds/feed.xml",
  "Expressen":"https://feeds.expressen.se/nyheter/",
  "Aftonbladet":"https://rss.aftonbladet.se/rss2/small/pages/sections/senastenytt/",
- "BBC":"https://feeds.bbci.co.uk/news/world/rss.xml",
- "New York Times":"https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
- "Financial Times":"https://www.ft.com/rss/home",
- "Der Spiegel":"https://www.spiegel.de/international/index.rss",
- "CNN":"https://rss.cnn.com/rss/edition_world.rss",
- "Washington Post":"https://feeds.washingtonpost.com/rss/world",
- "The Guardian":"https://www.theguardian.com/world/rss",
  "BBC":"https://feeds.bbci.co.uk/news/world/rss.xml",
  "New York Times":"https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
  "Financial Times":"https://www.ft.com/rss/home",
@@ -90,7 +83,7 @@ def section(x):
  hay=x["title"]+" "+x["desc"]
  if LOCAL.search(hay) or x["source"]=="SVT Öst":return "Östergötland"
  if PRISON.search(hay):return "Kriminalvården"
- if WORLD.search(hay):return "Internationell utblick"
+ if x["source"] in FOREIGN or WORLD.search(hay):return "Internationell utblick"
  if CULTURE.search(hay):return "Kultur och litteratur"
  if POLITICS.search(hay):return "Politik och ekonomi"
  return "Sverige och världen"
@@ -113,13 +106,13 @@ def story(x,group):
  return " ".join(out)
 
 # Samla händelser en gång globalt, så att samma nyhet inte kommer i flera avsnitt.
-candidates=sorted([x for x in items if valid(x) and x["source"] not in FOREIGN],key=lambda x:(score(x),x["date"]),reverse=True)
+candidates=sorted([x for x in items if valid(x) and score(x)>0],key=lambda x:(score(x),x["date"]),reverse=True)
 groups=[]
 for x in candidates:
  match=next((g for g in groups if same(x,g[0])),None)
  if match is None:groups.append([x])
  else:match.append(x)
-for g in groups:g.sort(key=lambda x:(x["source"]=="Ekot",score(x),len(x["desc"])),reverse=True)
+for g in groups:g.sort(key=lambda x:(score(x),len(x["desc"])),reverse=True)
 buckets={k:[] for k in ("Sverige och världen","Politik och ekonomi","Östergötland","Kriminalvården","Kultur och litteratur","Internationell utblick")}
 for g in groups:
  primary=g[0]
@@ -145,11 +138,11 @@ for heading in ("Sverige och världen","Politik och ekonomi","Östergötland","K
 
 # Internationell utblick ska alltid vara en egen del och får hämta relevanta
 # världshändelser även från andra rubrikgrupper, men aldrig upprepa en händelse.
-world_groups=[g for g in groups if WORLD.search(g[0]["title"]+" "+g[0]["desc"]) and id(g) not in used]
+world_groups=[g for g in groups if (g[0]["source"] in FOREIGN or WORLD.search(g[0]["title"]+" "+g[0]["desc"])) and id(g) not in used]
 world_groups.sort(key=lambda g:(score(g[0]),g[0]["date"]),reverse=True)
-for g in world_groups[:7]:add_group(g,"Internationell utblick")
+for g in world_groups[:8]:add_group(g,"Internationell utblick")
 if "Internationell utblick" not in emitted:
- lines.append("\nInternationell utblick. De tillgängliga svenska nyhetsflödena innehöll inga ytterligare självständiga internationella händelser med tillräcklig bakgrund för en tillförlitlig sammanfattning.")
+ lines.append("\nInternationell utblick. Inga internationella nyheter med tillräckligt underlag kunde väljas.")
 
 # Börsnotis kräver substans. Rubrikträffar utan förklaring utelämnas.
 market=[g[0] for g in groups if MARKET.search(g[0]["title"]+" "+g[0]["desc"]) and len(g[0]["desc"])>=180]
@@ -158,5 +151,5 @@ if market:
  lines.append("\nBörsrisk. "+x["source"]+" rapporterar: "+x["title"].rstrip(".")+". "+detail(x)+" Det är en riskbedömning, inte en säker prognos.")
  if x not in selected:selected.append(x)
 with open("report.json","w",encoding="utf-8") as f:
- json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\n".join(lines),"items":selected,"warnings":errors,"source_counts":{name:sum(x["source"]==name for x in selected) for name in FEEDS},"feed_counts":{name:sum(x["source"]==name for x in items) for name in FEEDS},"monitored_not_translated":sorted(FOREIGN),"method":"Redaktionellt prioriterad regelbaserad RSS-översikt, inga AI-genererade eller verifierade helartikelreferat."},f,ensure_ascii=False,indent=2)
+ json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\n".join(lines),"items":selected,"warnings":errors,"source_counts":{name:sum(x["source"]==name for x in selected) for name in FEEDS},"feed_counts":{name:sum(x["source"]==name for x in items) for name in FEEDS},"languages":"Svenska, engelska och tyska i original","method":"Redaktionellt prioriterad regelbaserad RSS-översikt, inga AI-genererade eller verifierade helartikelreferat."},f,ensure_ascii=False,indent=2)
 print("Rapport klar:",len(selected),"källnotiser;",{name:sum(x["source"]==name for x in selected) for name in FEEDS})
