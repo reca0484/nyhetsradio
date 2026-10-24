@@ -99,13 +99,6 @@ for section in ["Sverige och världen","Politik och ekonomi","Östergötland","K
  for x in chosen:
   lines.append(sentence(x))
   selected.append(x)
-lines.append("\\nProgrambevakning. P1 Morgon, Nyhetsmorgon och Nyhetsdagen kan inte fullständigt sammanfattas automatiskt av denna gratisversion. För reportage, intervjuer och samtal, se respektive programsida.")
-lines.append("P1 Morgon: https://www.sverigesradio.se/poddar/p1-morgon")
-lines.append("TV4 Nyhetsmorgon: https://www.tv4play.se/")
-lines.append("TV4 Nyhetsdagen: https://www.tv4.se/nyhetsdagen")
-lines.append("\\nKällänkar.")
-for x in selected:lines.append(f'{x["source"]}: {x["link"]}')
-if errors:lines.append("Källor som inte kunde hämtas: "+", ".join(errors))
 with open("report.json","w",encoding="utf-8") as f:
  json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\n".join(lines),"items":selected,"warnings":errors,"method":"Gratis prioriterad RSS-översikt med källornas egna kortbeskrivningar; inte AI-analys eller fullständig programsammanfattning"},f,ensure_ascii=False,indent=2)
 print(f"Skrev {len(selected)} prioriterade nyhetsinslag från {len(FEEDS)-len(errors)} källor.")
