@@ -28,7 +28,8 @@ FEEDS={
  "The Guardian":"https://www.theguardian.com/world/rss",
  "P1 Morgon":"https://api.sr.se/api/rss/program/1602",
  "Ekot podd":"https://public-api.sr.se/rss/ekot-nyhetssandning",
- "Dagens Eko podd":"https://api.sr.se/api/rss/pod/34795",
+ "Dagens Eko podd":"https://public-api.sr.se/rss/dagens-eko",
+ "Ekot senaste nytt podd":"https://public-api.sr.se/rss/ekot-senaste-nytt",
  "SR Nyheter":"https://news.google.com/rss/search?q=site%3Asverigesradio.se%2Fartikel+when%3A2d&hl=sv&gl=SE&ceid=SE:sv",
  "P1 Morgon nyheter":"https://news.google.com/rss/search?q=site%3Asverigesradio.se+%22P1-morgon%22+when%3A2d&hl=sv&gl=SE&ceid=SE:sv",
 }
@@ -56,8 +57,6 @@ def fetch(pair):
  result=[]
  for item in root.findall(".//item")[:120]:
   title=clean(item.findtext("title"));desc=clean(item.findtext("description"))
-  if source.endswith(" podd") and len(desc)<65:
-   desc=title+" (ljudavsnitt från Sveriges Radio; innehållet är inte transkriberat)"
   link=(item.findtext("link") or "").strip()
   try:dt=email.utils.parsedate_to_datetime(item.findtext("pubDate")).astimezone(ZoneInfo("Europe/Stockholm"))
   except Exception:continue
@@ -161,8 +160,9 @@ if market:
  x=sorted(market,key=lambda x:(score(x),x["date"]),reverse=True)[0]
  lines.append("\nBörsrisk. "+x["source"]+" rapporterar: "+x["title"].rstrip(".")+". "+detail(x)+" Utvecklingen kan förändras och är ingen säker prognos.")
  if x not in selected:selected.append(x)
+podcast_episodes=[dict(source=x["source"],title=x["title"],link=x["link"],date=x["date"],description=x["desc"]) for x in items if x["source"].endswith(" podd")]
 with open("report.json","w",encoding="utf-8") as f:
- json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\n".join(lines),"items":selected,"warnings":errors,"source_counts":{name:sum(x["source"]==name for x in selected) for name in FEEDS},"feed_counts":{name:sum(x["source"]==name for x in items) for name in FEEDS},"unavailable_sources":[name for name in FEEDS if not any(x["source"]==name for x in items)],"sr_audio_episodes":[{"source":x["source"],"title":x["title"],"url":x["link"],"date":x["date"]} for x in items if x["source"].endswith(" podd")][:20],"quality_check":{"international_stories":sum(1 for x in selected if x["source"] in FOREIGN),"market_alert":bool(market),"sources_represented":len(set(x["source"] for x in selected))},"languages":"Svenska, engelska och tyska i original","method":"Redaktionellt prioriterad regelbaserad RSS-översikt, inga AI-genererade eller verifierade helartikelreferat."},f,ensure_ascii=False,indent=2)
+ json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\n".join(lines),"items":selected,"warnings":errors,"source_counts":{name:sum(x["source"]==name for x in selected) for name in FEEDS},"feed_counts":{name:sum(x["source"]==name for x in items) for name in FEEDS},"unavailable_sources":[name for name in FEEDS if not any(x["source"]==name for x in items)],"sr_audio_episodes":[{"source":x["source"],"title":x["title"],"url":x["link"],"date":x["date"]} for x in items if x["source"].endswith(" podd")][:20],"quality_check":{"international_stories":sum(1 for x in selected if x["source"] in FOREIGN),"market_alert":bool(market),"sources_represented":len(set(x["source"] for x in selected))},"languages":"Svenska, engelska och tyska i original","sr_podcast_episodes":podcast_episodes[:30],"sr_podcast_note":"Poddarnas metadata och länkar, inte transkriberade eller verifierade nyhetsreferat.","method":"Redaktionellt prioriterad regelbaserad RSS-översikt, inga AI-genererade eller verifierade helartikelreferat."},f,ensure_ascii=False,indent=2)
 print("Rapport klar:",len(selected),"källnotiser;",{name:sum(x["source"]==name for x in selected) for name in FEEDS})
 print("KÄLLOR UTAN NYHETER:",[name for name in FEEDS if not any(x["source"]==name for x in items)])
 print("KÄLLFEL:",errors)
