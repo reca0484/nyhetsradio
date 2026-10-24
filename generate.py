@@ -101,16 +101,16 @@ for x in unique:
  sections[x["section"]].append(x)
 for section in sections:sections[section].sort(key=lambda x:(x["score"],x["date"]),reverse=True)
 def related(a,b):
- if a["source"]==b["source"]:return False
+ if a["link"]==b["link"]:return True
  ta=set(re.findall(r"[a-zåäö]{4,}",a["title"].lower()))
  tb=set(re.findall(r"[a-zåäö]{4,}",b["title"].lower()))
  common=ta&tb
- return len(common)>=3 and len(common)/max(1,min(len(ta),len(tb)))>=0.7 and SequenceMatcher(None,a["title"].lower(),b["title"].lower()).ratio()>0.45
+ return (len(common)>=3 and len(common)/max(1,min(len(ta),len(tb)))>=0.62) or (len(common)>=2 and SequenceMatcher(None,a["title"].lower(),b["title"].lower()).ratio()>0.78)
 def combined(x,others):
  result=sentence(x)
  for y in others[:3]:
-  if SequenceMatcher(None,x["desc"].lower(),y["desc"].lower()).ratio()>0.75:continue
-  detail=y["desc"][:450].strip()
+  if SequenceMatcher(None,x["desc"].lower(),y["desc"].lower()).ratio()>0.65:continue
+  detail=y["desc"][:600].strip()
   if detail:result+=" "+y["source"]+" tillägger: "+detail
  return result
 months=["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"]
@@ -123,7 +123,7 @@ for section in ["Sverige och världen","Politik och ekonomi","Östergötland","K
  if not chosen: continue
  lines.append("\n"+section+".")
  for x in chosen:
-  if x["link"] in used:continue
+  if x["link"] in used or any(related(x,y) for y in selected):continue
   related_items=[y for y in unique if y["link"] not in used and y["link"]!=x["link"] and related(x,y) and category(y) not in ("Sport","Nöje")][:3]
   lines.append(combined(x,related_items))
   selected.extend([x]+related_items)
