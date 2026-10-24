@@ -27,6 +27,8 @@ FEEDS={
  "Washington Post":"https://news.google.com/rss/search?q=when%3A2d+site%3Awashingtonpost.com&hl=en-US&gl=US&ceid=US%3Aen",
  "The Guardian":"https://www.theguardian.com/world/rss",
  "P1 Morgon":"https://api.sr.se/api/rss/program/1602",
+ "Ekot podd":"https://public-api.sr.se/rss/ekot-nyhetssandning",
+ "Dagens Eko podd":"https://api.sr.se/api/rss/pod/34795",
  "SR Nyheter":"https://news.google.com/rss/search?q=site%3Asverigesradio.se%2Fartikel+when%3A2d&hl=sv&gl=SE&ceid=SE:sv",
  "P1 Morgon nyheter":"https://news.google.com/rss/search?q=site%3Asverigesradio.se+%22P1-morgon%22+when%3A2d&hl=sv&gl=SE&ceid=SE:sv",
 }
@@ -54,6 +56,8 @@ def fetch(pair):
  result=[]
  for item in root.findall(".//item")[:120]:
   title=clean(item.findtext("title"));desc=clean(item.findtext("description"))
+  if source.endswith(" podd") and len(desc)<65:
+   desc=title+" (ljudavsnitt från Sveriges Radio; innehållet är inte transkriberat)"
   link=(item.findtext("link") or "").strip()
   try:dt=email.utils.parsedate_to_datetime(item.findtext("pubDate")).astimezone(ZoneInfo("Europe/Stockholm"))
   except Exception:continue
@@ -79,7 +83,7 @@ def same(a,b):
 FOREIGN={"BBC","New York Times","Financial Times","Der Spiegel","CNN","Washington Post","The Guardian"}
 def valid(x):
  d=x["desc"]
- return (len(d)>=65 or (x["source"] in ("CNN","Washington Post","Der Spiegel","Publikt") and len(d)>=35)) and SequenceMatcher(None,x["title"].lower(),d.lower()).ratio()<.78 and not d.lower().startswith(x["title"].lower()[:40]) and not (x["source"].startswith("SR ") and len(words(d)-words(x["title"]))<7)
+ return (len(d)>=65 or (x["source"] in ("CNN","Washington Post","Der Spiegel","Publikt") and len(d)>=35)) and SequenceMatcher(None,x["title"].lower(),d.lower()).ratio()<.78 and not (d.lower().startswith(x["title"].lower()[:40]) and not x["source"].endswith(" podd")) and not (x["source"].startswith("SR ") and len(words(d)-words(x["title"]))<7)
 def score(x):
  hay=x["title"]+" "+x["desc"]
  return 3+(9 if IMPORTANT.search(x["title"]) else 4 if IMPORTANT.search(hay) else 0)+(5 if WORLD.search(x["title"]) or POLITICS.search(x["title"]) else 0)+min(len(x["desc"])//140,3)-(25 if SPORT.search(x["title"]) or GOSSIP.search(x["title"]) else 0)-(18 if re.search(r"influencer|influerare|filmroll|selftape|novell|recension|krönika",x["title"],re.I) else 0)
@@ -110,7 +114,7 @@ def story(x,group):
  return " ".join(out)
 
 # Samla händelser en gång globalt, så att samma nyhet inte kommer i flera avsnitt.
-candidates=sorted([x for x in items if valid(x) and score(x)>0],key=lambda x:(score(x),x["date"]),reverse=True)
+candidates=sorted([x for x in items if valid(x) and score(x)>0 and not x["source"].endswith(" podd")],key=lambda x:(score(x),x["date"]),reverse=True)
 groups=[]
 for x in candidates:
  match=next((g for g in groups if same(x,g[0])),None)
@@ -158,7 +162,7 @@ if market:
  lines.append("\nBörsrisk. "+x["source"]+" rapporterar: "+x["title"].rstrip(".")+". "+detail(x)+" Utvecklingen kan förändras och är ingen säker prognos.")
  if x not in selected:selected.append(x)
 with open("report.json","w",encoding="utf-8") as f:
- json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\n".join(lines),"items":selected,"warnings":errors,"source_counts":{name:sum(x["source"]==name for x in selected) for name in FEEDS},"feed_counts":{name:sum(x["source"]==name for x in items) for name in FEEDS},"unavailable_sources":[name for name in FEEDS if not any(x["source"]==name for x in items)],"quality_check":{"international_stories":sum(1 for x in selected if x["source"] in FOREIGN),"market_alert":bool(market),"sources_represented":len(set(x["source"] for x in selected))},"languages":"Svenska, engelska och tyska i original","method":"Redaktionellt prioriterad regelbaserad RSS-översikt, inga AI-genererade eller verifierade helartikelreferat."},f,ensure_ascii=False,indent=2)
+ json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\n".join(lines),"items":selected,"warnings":errors,"source_counts":{name:sum(x["source"]==name for x in selected) for name in FEEDS},"feed_counts":{name:sum(x["source"]==name for x in items) for name in FEEDS},"unavailable_sources":[name for name in FEEDS if not any(x["source"]==name for x in items)],"sr_audio_episodes":[{"source":x["source"],"title":x["title"],"url":x["link"],"date":x["date"]} for x in items if x["source"].endswith(" podd")][:20],"quality_check":{"international_stories":sum(1 for x in selected if x["source"] in FOREIGN),"market_alert":bool(market),"sources_represented":len(set(x["source"] for x in selected))},"languages":"Svenska, engelska och tyska i original","method":"Redaktionellt prioriterad regelbaserad RSS-översikt, inga AI-genererade eller verifierade helartikelreferat."},f,ensure_ascii=False,indent=2)
 print("Rapport klar:",len(selected),"källnotiser;",{name:sum(x["source"]==name for x in selected) for name in FEEDS})
 print("KÄLLOR UTAN NYHETER:",[name for name in FEEDS if not any(x["source"]==name for x in items)])
 print("KÄLLFEL:",errors)
