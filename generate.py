@@ -10,6 +10,7 @@ FEEDS={
  "SVT Nyheter":"https://www.svt.se/nyheter/rss.xml",
  "Sveriges Radio Ekot":"https://api.sr.se/api/rss/program/83",
  "Dagens Nyheter":"https://www.dn.se/rss/",
+ "SVT Öst":"https://www.svt.se/nyheter/lokalt/ost/rss.xml",
 }
 TOPICS=[
  ("Kriminalvården",r"kriminalvård|anstalt|häkte|fängelse|intagen|frihetsberöv|JO-kritik|fångtransport|beläggning"),
@@ -48,29 +49,62 @@ for x in sorted(items,key=lambda a:a["date"],reverse=True):
  k=re.sub(r"[^a-zåäö0-9]","",x["title"].lower())[:90]
  if k in seen: continue
  seen.add(k);unique.append(x)
-sections={name:[] for name,_ in TOPICS}
-sections["Sverige och världen"]=[]
-for x in unique:
+# Väsentlighetsbedömning utifrån nyckelord, aktualitet och ämne.
+# Denna regelbaserade metod är inte en AI-bedömning.
+SPORT=re.compile(r"\\b(fotboll|hockey|ishockey|allsvenskan|elitserien|derby|derbyt|matchen|målet|straffmål|guldstrid|skellefteå|brynäs|djurgården|bajen|sirius|aik|häcken|björklöven|tennis|idrott|olympiad|vm-final|os-final)\\b",re.I)
+SKVALLER=re.compile(r"\\b(influencer|realitystjärna|kändisbråk|dejtar|skilsmässorykte|tiktokprofil|instagramprofil|paradise hotel)\\b",re.I)
+VIKTIGT=re.compile(r"\\b(krig|fred|vapenvila|attack|död|omkom|katastrof|brand|evaku|regering|riksdag|budget|beslut|domstol|åtal|sjukvård|skola|energi|elpris|arbetslöshet|ränta|inflation|ekonomi|kris|valresultat|strejk|säkerhet|klimat|kriminalvård|anstalt|häkte|fängelse|utredning)\\b",re.I)
+def category(x):
  hay=(x["title"]+" "+x["desc"]).lower()
- topic=next((name for name,pat in TOPICS if re.search(pat,hay)), "Sverige och världen")
- sections[topic].append(x)
-lines=[f"Nyheter. {NOW.strftime('%d %B %Y')}.","Automatisk nyhetsöversikt från öppna nyhetsflöden. Detta är inte en fullständig genomgång av radio- eller tv-sändningar."]
+ if SPORT.search(hay): return "Sport"
+ if SKVALLER.search(hay): return "Nöje"
+ return next((name for name,pat in TOPICS if re.search(pat,hay)), "Sverige och världen")
+def score(x):
+ hay=x["title"]+" "+x["desc"]
+ section=category(x)
+ value=2 + (6 if VIKTIGT.search(hay) else 0)
+ value+= {"Kriminalvården":5,"Östergötland":4,"Politik och ekonomi":3,"Kultur och litteratur":2,"Sverige och världen":2,"Sport":-8,"Nöje":-12}.get(section,0)
+ value+=min(len(x["desc"])//110,3)
+ if x["source"]=="Sveriges Radio Ekot":value+=1
+ return value
+def sentence(x):
+ # Beskrivningen är den kontext som faktiskt publicerats av källan.
+ # Ingen påhittad bakgrund eller slutsats läggs till.
+ desc=x["desc"].strip()
+ title=x["title"].strip().rstrip(".")
+ if not desc or desc.lower()==title.lower():
+  return f'{x["source"]} rapporterar: {title}. Någon närmare förklaring finns inte i det öppna nyhetsflödet.'
+ desc=re.sub(r"\\s+"," ",desc)
+ if len(desc)>360:
+  desc=desc[:360].rsplit(" ",1)[0].rstrip(" ,;:")+"."
+ if not desc.endswith((".","!","?")):desc+="."
+ return f'{x["source"]} rapporterar: {title}. {desc}'
+sections={name:[] for name,_ in TOPICS}
+sections.update({"Sverige och världen":[],"Sport":[],"Nöje":[]})
+for x in unique:
+ x["section"]=category(x)
+ x["score"]=score(x)
+ sections[x["section"]].append(x)
+for section in sections:sections[section].sort(key=lambda x:(x["score"],x["date"]),reverse=True)
+months=["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"]
+lines=[f'Nyheter. {NOW.day} {months[NOW.month-1]} {NOW.year}.',
+       "Dagens nyhetsöversikt bygger på tillgängliga sammanfattningar från nyhetsredaktionernas öppna flöden. Viktiga nyheter kommer först. Det är inte en fullständig granskning av radio- eller tv-sändningar."]
 selected=[]
-limits={"Kriminalvården":25,"Östergötland":25,"Sverige och världen":32,"Politik och ekonomi":18,"Kultur och litteratur":12}
-for section in ["Sverige och världen","Östergötland","Kriminalvården","Politik och ekonomi","Kultur och litteratur"]:
- chosen=sections[section][:limits[section]]
+limits={"Sverige och världen":9,"Östergötland":7,"Kriminalvården":7,"Politik och ekonomi":6,"Kultur och litteratur":4,"Sport":1}
+for section in ["Sverige och världen","Östergötland","Kriminalvården","Politik och ekonomi","Kultur och litteratur","Sport"]:
+ chosen=[x for x in sections[section] if x["score"]>=0][:limits[section]]
  if not chosen: continue
  lines.append("\\n"+section+".")
  for x in chosen:
-  # Återger rubriker, inte hela upphovsrättsskyddade artiklar.
-  lines.append(f'{x["source"]}. {x["title"]}.')
+  lines.append(sentence(x))
   selected.append(x)
-lines.append("\\nP1 Morgon: Se dagens avsnitt och kapitellänkar på https://www.sverigesradio.se/poddar/p1-morgon")
-lines.append("TV4 Nyhetsmorgon: Se dagens avsnitt på https://www.tv4play.se/")
-lines.append("TV4 Nyhetsdagen: Se dagens klipp på https://www.tv4.se/nyhetsdagen")
+lines.append("\\nProgrambevakning. P1 Morgon, Nyhetsmorgon och Nyhetsdagen kan inte fullständigt sammanfattas automatiskt av denna gratisversion. För reportage, intervjuer och samtal, se respektive programsida.")
+lines.append("P1 Morgon: https://www.sverigesradio.se/poddar/p1-morgon")
+lines.append("TV4 Nyhetsmorgon: https://www.tv4play.se/")
+lines.append("TV4 Nyhetsdagen: https://www.tv4.se/nyhetsdagen")
 lines.append("\\nKällänkar.")
 for x in selected:lines.append(f'{x["source"]}: {x["link"]}')
 if errors:lines.append("Källor som inte kunde hämtas: "+", ".join(errors))
 with open("report.json","w",encoding="utf-8") as f:
- json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\\n".join(lines),"items":selected,"warnings":errors,"method":"Gratis RSS-översikt, inte fullständig programsammanfattning"},f,ensure_ascii=False,indent=2)
-print(f"Skrev {len(selected)} artikellänkar från {len(FEEDS)-len(errors)} källor.")
+ json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\\n".join(lines),"items":selected,"warnings":errors,"method":"Gratis prioriterad RSS-översikt med källornas egna kortbeskrivningar; inte AI-analys eller fullständig programsammanfattning"},f,ensure_ascii=False,indent=2)
+print(f"Skrev {len(selected)} prioriterade nyhetsinslag från {len(FEEDS)-len(errors)} källor.")
