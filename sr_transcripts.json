@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-24T21:52:02.713008+02:00",
+  "updated": "2026-10-24T21:56:19.231761+02:00",
   "episodes": [],
   "warnings": [
     "Ekot: TypeError: open() got an unexpected keyword argument 'metadata_errors'",
