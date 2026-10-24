@@ -137,12 +137,23 @@ def add_group(g,heading):
  selected.extend(g);used.add(id(g));source_usage[g[0]["source"]]+=1
  return True
 emitted=set()
-# Säkerställ representation av SR när relevant material faktiskt hämtats.
-for sr_source in ("Ekot","P1 Morgon","Studio Ett"):
- sr_pool=[g for g in groups if any(x["source"]==sr_source for x in g)]
- sr_pool.sort(key=lambda g:(max(score(x) for x in g if x["source"]==sr_source),g[0]["date"]),reverse=True)
- for g in sr_pool[:(3 if sr_source=="Ekot" else 2)]:
-  if id(g) not in used:add_group(g,section(g[0]))
+# SR:s Google News-poster kan ha kort eller duplicerad beskrivning.
+# Välj därför verifierbara rubriker med källänk direkt från hämtade poster.
+# Lägg aldrig till påhittad brödtext eller låtsas att ljudet är transkriberat.
+for sr_source,quota in (("Ekot",3),("P1 Morgon",2),("Studio Ett",2)):
+ sr_items=[x for x in items if x["source"]==sr_source and x["title"] and x["link"] and not SPORT.search(x["title"]) and not GOSSIP.search(x["title"])]
+ sr_items.sort(key=lambda x:(score(x),x["date"]),reverse=True)
+ sr_seen=set()
+ for x in sr_items:
+  key=tuple(sorted(words(x["title"])))
+  if key in sr_seen:continue
+  sr_seen.add(key)
+  if source_usage[sr_source]>=quota:break
+  heading=section(x)
+  if heading not in emitted:lines.append("\\n"+heading+".");emitted.add(heading)
+  lines.append(x["title"].rstrip(".")+". Sveriges Radio, "+sr_source+". Läs originalartikeln via källänken.")
+  selected.append(x)
+  source_usage[sr_source]+=1
 for heading in ("Sverige och världen","Politik och ekonomi","Östergötland","Kriminalvården","Kultur och litteratur"):
  pool=[g for g in buckets[heading] if not (g[0]["source"] in FOREIGN or WORLD.search(g[0]["title"]+" "+g[0]["desc"])) or heading in ("Östergötland","Kriminalvården")]
  for _ in range(limits[heading]):
