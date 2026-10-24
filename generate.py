@@ -14,6 +14,15 @@ FEEDS={
  "SVT":"https://www.svt.se/nyheter/rss.xml",
  "SVT Öst":"https://www.svt.se/nyheter/lokalt/ost/rss.xml",
  "DN":"https://www.dn.se/rss/",
+ "Expressen":"https://feeds.expressen.se/nyheter/",
+ "Aftonbladet":"https://rss.aftonbladet.se/rss2/small/pages/sections/nyheter/",
+ "BBC":"https://feeds.bbci.co.uk/news/world/rss.xml",
+ "New York Times":"https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+ "Financial Times":"https://www.ft.com/rss/home",
+ "Der Spiegel":"https://www.spiegel.de/international/index.rss",
+ "CNN":"https://rss.cnn.com/rss/edition_world.rss",
+ "Washington Post":"https://feeds.washingtonpost.com/rss/world",
+ "The Guardian":"https://www.theguardian.com/world/rss",
  "BBC":"https://feeds.bbci.co.uk/news/world/rss.xml",
  "New York Times":"https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
  "Financial Times":"https://www.ft.com/rss/home",
@@ -74,7 +83,7 @@ def valid(x):
  return len(d)>=85 and SequenceMatcher(None,x["title"].lower(),d.lower()).ratio()<.78 and not d.lower().startswith(x["title"].lower()[:40])
 def score(x):
  hay=x["title"]+" "+x["desc"]
- return (7 if x["source"]=="Ekot" else 3 if x["source"]=="SVT" else 2)+(5 if IMPORTANT.search(hay) else 0)+min(len(x["desc"])//140,4)-(15 if SPORT.search(x["title"]) or GOSSIP.search(x["title"]) else 0)
+ return (5 if x["source"]=="Ekot" else 3)+(5 if IMPORTANT.search(hay) else 0)+min(len(x["desc"])//140,4)-(15 if SPORT.search(x["title"]) or GOSSIP.search(x["title"]) else 0)
 def section(x):
  hay=x["title"]+" "+x["desc"]
  if LOCAL.search(hay) or x["source"]=="SVT Öst":return "Östergötland"
@@ -147,5 +156,5 @@ if market:
  lines.append("\nBörsrisk. "+x["source"]+" rapporterar: "+x["title"].rstrip(".")+". "+detail(x)+" Det är en riskbedömning, inte en säker prognos.")
  if x not in selected:selected.append(x)
 with open("report.json","w",encoding="utf-8") as f:
- json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\n".join(lines),"items":selected,"warnings":errors,"source_counts":{name:sum(x["source"]==name for x in selected) for name in FEEDS},"method":"Redaktionellt prioriterad regelbaserad RSS-översikt, inga AI-genererade eller verifierade helartikelreferat."},f,ensure_ascii=False,indent=2)
+ json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\n".join(lines),"items":selected,"warnings":errors,"source_counts":{name:sum(x["source"]==name for x in selected) for name in FEEDS},"feed_counts":{name:sum(x["source"]==name for x in items) for name in FEEDS},"monitored_not_translated":sorted(FOREIGN),"method":"Redaktionellt prioriterad regelbaserad RSS-översikt, inga AI-genererade eller verifierade helartikelreferat."},f,ensure_ascii=False,indent=2)
 print("Rapport klar:",len(selected),"källnotiser;",{name:sum(x["source"]==name for x in selected) for name in FEEDS})
