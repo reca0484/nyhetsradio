@@ -111,12 +111,13 @@ def combined(x,others):
  for y in others[:3]:
   if SequenceMatcher(None,x["desc"].lower(),y["desc"].lower()).ratio()>0.65:continue
   detail=y["desc"][:600].strip()
-  if detail:result+=" "+y["source"]+" tillägger: "+detail
+  if detail and not any(related(y,z) and SequenceMatcher(None,y["desc"].lower(),z["desc"].lower()).ratio()>0.55 for z in [x]):result+=" "+y["source"]+" tillägger: "+detail
  return result
 months=["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"]
 lines=[f"{NOW.day} {months[NOW.month-1]} {NOW.year}."]
 selected=[]
 used=set()
+world_subjects=set()
 limits={"Sverige och världen":7,"Östergötland":6,"Kriminalvården":5,"Politik och ekonomi":6,"Kultur och litteratur":3,"Världen i korthet":6}
 for section in ["Sverige och världen","Politik och ekonomi","Östergötland","Kriminalvården","Kultur och litteratur","Världen i korthet"]:
  chosen=[x for x in sections[section] if x["score"]>=(-1 if section=="Världen i korthet" else 5) and len(x["desc"])>=(40 if section=="Världen i korthet" else 75) and x["desc"].lower()!=x["title"].lower()][:limits[section]]
@@ -124,6 +125,11 @@ for section in ["Sverige och världen","Politik och ekonomi","Östergötland","K
  lines.append("\n"+section+".")
  for x in chosen:
   if x["link"] in used or any(related(x,y) for y in selected):continue
+  if section=="Världen i korthet":
+   people=[name for name in ("melania trump","donald trump","putin","zelenskyj","xi jinping","modi") if name in (x["title"]+" "+x["desc"]).lower()]
+   if any(name in world_subjects for name in people):continue
+   world_subjects.update(people)
+   if any(name in (y["title"]+" "+y["desc"]).lower() for y in selected for name in people):continue
   related_items=[y for y in unique if y["link"] not in used and y["link"]!=x["link"] and related(x,y) and category(y) not in ("Sport","Nöje")][:3]
   lines.append(combined(x,related_items))
   selected.extend([x]+related_items)
@@ -135,7 +141,7 @@ risk_candidates=[x for x in unique if x["source"]=="Börsrisk" and risk_terms.se
 if risk_candidates:
  risk_candidates.sort(key=lambda x:x["date"],reverse=True)
  alert=risk_candidates[0]
- lines.append("\\nBörsrisk. "+alert["source"]+" återger uppgifter: "+alert["title"].rstrip(".")+". "+alert["desc"][:220].rstrip(" ,;:")+".")
+ lines.append("\\nBörsrisk. "+alert["title"].rstrip(".")+". "+alert["desc"][:500].rstrip(" ,;:")+". Detta är en analytikers bedömning, inte ett fastslaget framtida börsfall.")
  selected.append(alert)
 with open("report.json","w",encoding="utf-8") as f:
  json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\n".join(lines),"items":selected,"warnings":errors,"method":"Gratis prioriterad RSS-översikt med källornas egna kortbeskrivningar; inte AI-analys eller fullständig programsammanfattning"},f,ensure_ascii=False,indent=2)
