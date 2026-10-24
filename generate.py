@@ -10,7 +10,7 @@ if os.getenv("SCHEDULED")=="1" and NOW.hour!=11:
 
 # Originalspråk används: svenska, engelska och tyska. Källorna bedöms efter innehåll.
 FEEDS={
- "Ekot":"https://api.sr.se/api/rss/program/83",
+ "Ekot":"https://news.google.com/rss/search?q=site%3Asverigesradio.se%2Fartikel+Ekot+when%3A2d&hl=sv&gl=SE&ceid=SE%3Asv",
  "SVT":"https://www.svt.se/nyheter/rss.xml",
  "SVT Öst":"https://www.svt.se/nyheter/lokalt/ost/rss.xml",
  "DN":"https://www.dn.se/rss/",
@@ -26,12 +26,11 @@ FEEDS={
  "Publikt":"https://www.publikt.se/feeds/alla",
  "Washington Post":"https://news.google.com/rss/search?q=when%3A2d+site%3Awashingtonpost.com&hl=en-US&gl=US&ceid=US%3Aen",
  "The Guardian":"https://www.theguardian.com/world/rss",
- "P1 Morgon":"https://api.sr.se/api/rss/program/1602",
+ "P1 Morgon":"https://news.google.com/rss/search?q=site%3Asverigesradio.se+%22P1-morgon%22+when%3A2d&hl=sv&gl=SE&ceid=SE%3Asv",
+ "Studio Ett":"https://news.google.com/rss/search?q=site%3Asverigesradio.se+%22Studio+Ett%22+when%3A2d&hl=sv&gl=SE&ceid=SE%3Asv",
+ "P1 Morgon podd":"https://public-api.sr.se/rss/p1-morgon",
+ "Studio Ett podd":"https://public-api.sr.se/rss/studio-ett",
  "Ekot podd":"https://public-api.sr.se/rss/ekot-nyhetssandning",
- "Dagens Eko podd":"https://public-api.sr.se/rss/dagens-eko",
- "Ekot senaste nytt podd":"https://public-api.sr.se/rss/ekot-senaste-nytt",
- "SR Nyheter":"https://news.google.com/rss/search?q=site%3Asverigesradio.se%2Fartikel+when%3A2d&hl=sv&gl=SE&ceid=SE:sv",
- "P1 Morgon nyheter":"https://news.google.com/rss/search?q=site%3Asverigesradio.se+%22P1-morgon%22+when%3A2d&hl=sv&gl=SE&ceid=SE:sv",
 }
 LOCAL=re.compile(r"östergöt|linköping|norrköping|motala|mjölby|finspång|vadstena|söderköping|kinda|åtvidaberg|valdemarsvik|ydre|boxholm|ödeshög",re.I)
 PRISON=re.compile(r"kriminalvård|anstalt|häkte|fängelse|intagen|fångtransport|frihetsberöv",re.I)
@@ -162,7 +161,7 @@ if market:
  if x not in selected:selected.append(x)
 podcast_episodes=[dict(source=x["source"],title=x["title"],link=x["link"],date=x["date"],description=x["desc"]) for x in items if x["source"].endswith(" podd")]
 with open("report.json","w",encoding="utf-8") as f:
- json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\n".join(lines),"items":selected,"warnings":errors,"source_counts":{name:sum(x["source"]==name for x in selected) for name in FEEDS},"feed_counts":{name:sum(x["source"]==name for x in items) for name in FEEDS},"unavailable_sources":[name for name in FEEDS if not any(x["source"]==name for x in items)],"sr_audio_episodes":[{"source":x["source"],"title":x["title"],"url":x["link"],"date":x["date"]} for x in items if x["source"].endswith(" podd")][:20],"quality_check":{"international_stories":sum(1 for x in selected if x["source"] in FOREIGN),"market_alert":bool(market),"sources_represented":len(set(x["source"] for x in selected))},"languages":"Svenska, engelska och tyska i original","sr_podcast_episodes":podcast_episodes[:30],"sr_podcast_note":"Poddarnas metadata och länkar, inte transkriberade eller verifierade nyhetsreferat.","method":"Redaktionellt prioriterad regelbaserad RSS-översikt, inga AI-genererade eller verifierade helartikelreferat."},f,ensure_ascii=False,indent=2)
+ json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\n".join(lines),"items":selected,"warnings":errors,"source_counts":{name:sum(x["source"]==name for x in selected) for name in FEEDS},"feed_counts":{name:sum(x["source"]==name for x in items) for name in FEEDS},"unavailable_sources":[name for name in FEEDS if not any(x["source"]==name for x in items)],"sr_audio_episodes":[{"source":x["source"],"title":x["title"],"url":x["link"],"date":x["date"]} for x in items if x["source"].endswith(" podd")][:20],"quality_check":{"international_stories":sum(1 for x in selected if x["source"] in FOREIGN),"market_alert":bool(market),"sources_represented":len(set(x["source"] for x in selected))},"languages":"Svenska, engelska och tyska i original","sr_podcast_episodes":podcast_episodes[:30],"sr_podcast_note":"Bevakning av Ekot, hela P1 Morgon och Studio Ett via tillgängliga programbeskrivningar och länkar; ingen ljudtranskribering.","method":"Redaktionellt prioriterad regelbaserad RSS-översikt, inga AI-genererade eller verifierade helartikelreferat."},f,ensure_ascii=False,indent=2)
 print("Rapport klar:",len(selected),"källnotiser;",{name:sum(x["source"]==name for x in selected) for name in FEEDS})
 print("KÄLLOR UTAN NYHETER:",[name for name in FEEDS if not any(x["source"]==name for x in items)])
 print("KÄLLFEL:",errors)
