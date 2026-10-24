@@ -1,9 +1,11 @@
 """Gratis nyhetsöversikt från offentliga RSS-flöden. Ingen AI eller betaltjänst."""
-import datetime, email.utils, html, json, re, urllib.request, xml.etree.ElementTree as ET
+import datetime, email.utils, html, json, os, re, urllib.request, xml.etree.ElementTree as ET
 from zoneinfo import ZoneInfo
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 NOW=datetime.datetime.now(ZoneInfo("Europe/Stockholm"))
+if os.environ.get("SCHEDULED")=="1" and NOW.hour!=11:
+ print("Inte klockan 11 svensk tid, hoppar över.");raise SystemExit(0)
 FEEDS={
  "SVT Nyheter":"https://www.svt.se/nyheter/rss.xml",
  "Sveriges Radio Ekot":"https://api.sr.se/api/rss/program/83",
