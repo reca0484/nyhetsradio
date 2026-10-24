@@ -13,10 +13,13 @@ OUTPUT = Path("sr_transcripts.json")
 MAX_AGE_HOURS = 48
 KEYWORDS = re.compile(r"regering|riksdag|krig|ukraina|ryssland|kina|indien|europa|usa|nato|iran|israel|gaza|ekonomi|börs|ränta|inflation|kriminalvård|fängelse|linköping|östergötland|sjukvård|skola|klimat|säkerhet|valet|budget|utredning|förhandling", re.I)
 
-def get(url, limit=2000000):
+def get(url, limit=20000000):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 Nyhetsradio personal RSS reader", "Accept": "application/rss+xml, application/xml, */*"})
     with urllib.request.urlopen(req, timeout=35) as r:
-        return r.read(limit)
+        data = r.read(limit + 1)
+        if len(data) > limit:
+            raise ValueError("RSS-flödet överskrider säkerhetsgränsen")
+        return data
 
 def latest(source, url):
     import email.utils
