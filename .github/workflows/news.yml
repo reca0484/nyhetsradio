@@ -23,6 +23,8 @@ jobs:
       - name: Transkribera Ekot P1 Morgon Studio Ett
         continue-on-error: true
         run: python transcribe_sr.py
+      - name: Kontrollera Python-syntax
+        run: python -m py_compile generate.py transcribe_sr.py
       - name: Skapa rapport
         env:
           SCHEDULED: ${{ github.event_name == 'schedule' && '1' || '0' }}
