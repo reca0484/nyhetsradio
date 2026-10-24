@@ -153,6 +153,25 @@ for _ in range(8):
 if "Internationell utblick" not in emitted:
  lines.append("\nInternationell utblick. Inga internationella nyheter med tillräckligt underlag kunde väljas.")
 
+# Verkligt transkriberade radioinslag, aldrig bara poddrubriker.
+sr_audio=[]
+sr_audio_warnings=[]
+try:
+ with open("sr_transcripts.json",encoding="utf-8") as fp:sr_data=json.load(fp)
+ sr_audio_warnings=sr_data.get("warnings",[])
+ for ep in sr_data.get("episodes",[]):
+  if not ep.get("transcribed"):continue
+  try:ep_date=datetime.datetime.fromisoformat(ep["date"])
+  except (KeyError,ValueError):continue
+  if NOW-ep_date>datetime.timedelta(hours=48):continue
+  excerpts=[e["text"] for e in ep.get("excerpts",[]) if len(e.get("text",""))>45]
+  if not excerpts:continue
+  sr_audio.append(ep)
+  lines.append("\\nFrån Sveriges Radio: "+ep["source"]+".")
+  lines.append("Ur den automatiska transkriberingen av "+ep["title"]+": "+" ".join(excerpts[:5]))
+except (OSError,ValueError,KeyError) as exc:
+ sr_audio_warnings.append("Ingen användbar SR-transkribering: "+type(exc).__name__)
+
 # Börsnotis kräver substans. Rubrikträffar utan förklaring utelämnas.
 market=[g[0] for g in groups if MARKET.search(g[0]["title"]+" "+g[0]["desc"]) and DOWNTURN.search(g[0]["title"]+" "+g[0]["desc"]) and len(g[0]["desc"])>=90]
 if market:
@@ -161,7 +180,7 @@ if market:
  if x not in selected:selected.append(x)
 podcast_episodes=[dict(source=x["source"],title=x["title"],link=x["link"],date=x["date"],description=x["desc"]) for x in items if x["source"].endswith(" podd")]
 with open("report.json","w",encoding="utf-8") as f:
- json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\n".join(lines),"items":selected,"warnings":errors,"source_counts":{name:sum(x["source"]==name for x in selected) for name in FEEDS},"feed_counts":{name:sum(x["source"]==name for x in items) for name in FEEDS},"unavailable_sources":[name for name in FEEDS if not any(x["source"]==name for x in items)],"sr_audio_episodes":[{"source":x["source"],"title":x["title"],"url":x["link"],"date":x["date"]} for x in items if x["source"].endswith(" podd")][:20],"quality_check":{"international_stories":sum(1 for x in selected if x["source"] in FOREIGN),"market_alert":bool(market),"sources_represented":len(set(x["source"] for x in selected))},"languages":"Svenska, engelska och tyska i original","sr_podcast_episodes":podcast_episodes[:30],"sr_podcast_note":"Bevakning av Ekot, hela P1 Morgon och Studio Ett via tillgängliga programbeskrivningar och länkar; ingen ljudtranskribering.","method":"Redaktionellt prioriterad regelbaserad RSS-översikt, inga AI-genererade eller verifierade helartikelreferat."},f,ensure_ascii=False,indent=2)
+ json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\n".join(lines),"items":selected,"warnings":errors,"source_counts":{name:sum(x["source"]==name for x in selected) for name in FEEDS},"feed_counts":{name:sum(x["source"]==name for x in items) for name in FEEDS},"unavailable_sources":[name for name in FEEDS if not any(x["source"]==name for x in items)],"sr_audio_episodes":[{"source":x["source"],"title":x["title"],"url":x["link"],"date":x["date"]} for x in items if x["source"].endswith(" podd")][:20],"quality_check":{"international_stories":sum(1 for x in selected if x["source"] in FOREIGN),"market_alert":bool(market),"sources_represented":len(set(x["source"] for x in selected))},"languages":"Svenska, engelska och tyska i original","sr_podcast_episodes":podcast_episodes[:30],"sr_audio_used":len(sr_audio),"sr_audio_warnings":sr_audio_warnings,"sr_podcast_note":"Bevakning av Ekot, hela P1 Morgon och Studio Ett via tillgängliga programbeskrivningar och länkar; ingen ljudtranskribering.","method":"Redaktionellt prioriterad regelbaserad RSS-översikt, inga AI-genererade eller verifierade helartikelreferat."},f,ensure_ascii=False,indent=2)
 print("Rapport klar:",len(selected),"källnotiser;",{name:sum(x["source"]==name for x in selected) for name in FEEDS})
 print("KÄLLOR UTAN NYHETER:",[name for name in FEEDS if not any(x["source"]==name for x in items)])
 print("KÄLLFEL:",errors)
