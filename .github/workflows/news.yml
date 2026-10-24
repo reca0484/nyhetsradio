@@ -15,9 +15,6 @@ jobs:
         with:
           python-version: '3.12'
       - name: Skapa rapport
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          SCHEDULED: ${{ github.event_name == 'schedule' && '1' || '0' }}
         run: python generate.py
       - name: Publicera rapport
         run: |
