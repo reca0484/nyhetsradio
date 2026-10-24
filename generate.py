@@ -35,7 +35,7 @@ POLITICS=re.compile(r"regering|riksdag|minister|partiledare|budget|ränta|inflat
 IMPORTANT=re.compile(r"krig|attack|vapenvila|fred|kris|katastrof|omkom|död|domstol|åtal|beslut|säkerhet|strejk|klimat|utredning|förhandling",re.I)
 SPORT=re.compile(r"fotboll|ishockey|allsvenskan|tennis|olympiad|idrott|mästerskap|sportchef",re.I)
 GOSSIP=re.compile(r"influencer|realitystjärna|kändisbråk|dejtar|skilsmässorykte|paradise hotel",re.I)
-MARKET=re.compile(r"börsbubbla|börskrasch|börsfall|finanskris|marknadskrasch|systemrisk|kreditkris|risk för börsras|varnar för börsfall",re.I)
+MARKET=re.compile(r"börsbubbla|börskrasch|börsfall|finanskris|marknadskrasch|systemrisk|kreditkris|risk för börsras|varnar för börsfall|market crash|stock market bubble|market correction|sell.off|financial crisis|market risk|financial instability|Aktienblase|Börsencrash|Finanzkrise|Marktrisiko",re.I)
 STOP=set("och att det den ett med för från till som har hade efter över under inte detta enligt säger uppger nya nytt stora sverige världen rapporterar".split())
 
 def clean(s):
@@ -121,31 +121,34 @@ for key in buckets:buckets[key].sort(key=lambda g:(score(g[0]),g[0]["date"]),rev
 
 months="januari februari mars april maj juni juli augusti september oktober november december".split()
 lines=[f"{NOW.day} {months[NOW.month-1]} {NOW.year}."]
-selected=[];used=set()
+selected=[];used=set();source_usage={name:0 for name in FEEDS}
 limits={"Sverige och världen":7,"Politik och ekonomi":7,"Östergötland":6,"Kriminalvården":5,"Kultur och litteratur":3,"Internationell utblick":5}
 def add_group(g,heading):
  if id(g) in used:return False
  if heading not in emitted:lines.append("\n"+heading+".");emitted.add(heading)
  lines.append(story(g[0],g[1:]))
- selected.extend(g);used.add(id(g))
+ selected.extend(g);used.add(id(g));source_usage[g[0]["source"]]+=1
  return True
 emitted=set()
 for heading in ("Sverige och världen","Politik och ekonomi","Östergötland","Kriminalvården","Kultur och litteratur"):
- for g in buckets[heading]:
-  if WORLD.search(g[0]["title"]+" "+g[0]["desc"]) and heading not in ("Östergötland","Kriminalvården"):continue
-  if sum(id(z) in used for z in buckets[heading])>=limits[heading]:break
-  add_group(g,heading)
+ pool=[g for g in buckets[heading] if not (g[0]["source"] in FOREIGN or WORLD.search(g[0]["title"]+" "+g[0]["desc"])) or heading in ("Östergötland","Kriminalvården")]
+ for _ in range(limits[heading]):
+  if not pool:break
+  pool.sort(key=lambda g:(score(g[0])-3*min(source_usage[g[0]["source"]],5),g[0]["date"]),reverse=True)
+  add_group(pool.pop(0),heading)
 
 # Internationell utblick ska alltid vara en egen del och får hämta relevanta
 # världshändelser även från andra rubrikgrupper, men aldrig upprepa en händelse.
 world_groups=[g for g in groups if (g[0]["source"] in FOREIGN or WORLD.search(g[0]["title"]+" "+g[0]["desc"])) and id(g) not in used]
-world_groups.sort(key=lambda g:(score(g[0]),g[0]["date"]),reverse=True)
-for g in world_groups[:8]:add_group(g,"Internationell utblick")
+for _ in range(8):
+ if not world_groups:break
+ world_groups.sort(key=lambda g:(score(g[0])-4*min(source_usage[g[0]["source"]],5)+(3 if g[0]["source"] in FOREIGN else 0),g[0]["date"]),reverse=True)
+ add_group(world_groups.pop(0),"Internationell utblick")
 if "Internationell utblick" not in emitted:
  lines.append("\nInternationell utblick. Inga internationella nyheter med tillräckligt underlag kunde väljas.")
 
 # Börsnotis kräver substans. Rubrikträffar utan förklaring utelämnas.
-market=[g[0] for g in groups if MARKET.search(g[0]["title"]+" "+g[0]["desc"]) and len(g[0]["desc"])>=180]
+market=[g[0] for g in groups if MARKET.search(g[0]["title"]+" "+g[0]["desc"]) and len(g[0]["desc"])>=120]
 if market:
  x=sorted(market,key=lambda x:(score(x),x["date"]),reverse=True)[0]
  lines.append("\nBörsrisk. "+x["source"]+" rapporterar: "+x["title"].rstrip(".")+". "+detail(x)+" Det är en riskbedömning, inte en säker prognos.")
