@@ -12,6 +12,14 @@ FEEDS={
  "Sveriges Radio Ekot":"https://api.sr.se/api/rss/program/83",
  "Dagens Nyheter":"https://www.dn.se/rss/",
  "SVT Öst":"https://www.svt.se/nyheter/lokalt/ost/rss.xml",
+ "BBC World":"https://feeds.bbci.co.uk/news/world/rss.xml",
+ "New York Times World":"https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+ "The Guardian World":"https://www.theguardian.com/world/rss",
+ "Financial Times":"https://www.ft.com/rss/home",
+ "Der Spiegel International":"https://www.spiegel.de/international/index.rss",
+ "Kina":"https://news.google.com/rss/search?q=Kina+when:2d&hl=sv&gl=SE&ceid=SE:sv",
+ "Indien":"https://news.google.com/rss/search?q=Indien+when:2d&hl=sv&gl=SE&ceid=SE:sv",
+ "Ryssland":"https://news.google.com/rss/search?q=Ryssland+when:2d&hl=sv&gl=SE&ceid=SE:sv",
 }
 TOPICS=[
  ("Kriminalvården",r"kriminalvård|anstalt|häkte|fängelse|intagen|frihetsberöv|JO-kritik|fångtransport|beläggning"),
@@ -83,9 +91,9 @@ def sentence(x):
  if not desc.endswith((".","!","?")):desc+="."
  return f'{x["source"]}. {title}. {desc}'
 sections={name:[] for name,_ in TOPICS}
-sections.update({"Sverige och världen":[],"Sport":[],"Nöje":[]})
+sections.update({"Sverige och världen":[],"Sport":[],"Nöje":[],"Världen i korthet":[]})
 for x in unique:
- x["section"]=category(x)
+ x["section"]="Världen i korthet" if x["source"] in ("Kina","Indien","Ryssland") else category(x)
  x["score"]=score(x)
  sections[x["section"]].append(x)
 for section in sections:sections[section].sort(key=lambda x:(x["score"],x["date"]),reverse=True)
@@ -106,9 +114,9 @@ months=["januari","februari","mars","april","maj","juni","juli","augusti","septe
 lines=[f"{NOW.day} {months[NOW.month-1]} {NOW.year}."]
 selected=[]
 used=set()
-limits={"Sverige och världen":7,"Östergötland":6,"Kriminalvården":5,"Politik och ekonomi":6,"Kultur och litteratur":3}
-for section in ["Sverige och världen","Politik och ekonomi","Östergötland","Kriminalvården","Kultur och litteratur"]:
- chosen=[x for x in sections[section] if x["score"]>=5 and len(x["desc"])>=75 and x["desc"].lower()!=x["title"].lower()][:limits[section]]
+limits={"Sverige och världen":7,"Östergötland":6,"Kriminalvården":5,"Politik och ekonomi":6,"Kultur och litteratur":3,"Världen i korthet":6}
+for section in ["Sverige och världen","Politik och ekonomi","Östergötland","Kriminalvården","Kultur och litteratur","Världen i korthet"]:
+ chosen=[x for x in sections[section] if x["score"]>=(-1 if section=="Världen i korthet" else 5) and len(x["desc"])>=75 and x["desc"].lower()!=x["title"].lower()][:limits[section]]
  if not chosen: continue
  lines.append("\n"+section+".")
  for x in chosen:
