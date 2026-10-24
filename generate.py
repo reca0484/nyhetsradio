@@ -17,7 +17,7 @@ FEEDS={
  "The Guardian World":"https://www.theguardian.com/world/rss",
  "Financial Times":"https://www.ft.com/rss/home",
  "Der Spiegel International":"https://www.spiegel.de/international/index.rss",
- "BBC Svenska världen":"https://news.google.com/rss/search?q=site%3Abbc.com%2Fnews+world+when%3A2d&hl=sv&gl=SE&ceid=SE:sv",
+ "Börsrisk":"https://news.google.com/rss/search?q=b%C3%B6rsfall+OR+b%C3%B6rsbubbla+OR+finanskris+OR+marknadsoro+when:2d&hl=sv&gl=SE&ceid=SE:sv",
 }
 TOPICS=[
  ("Kriminalvården",r"kriminalvård|anstalt|häkte|fängelse|intagen|frihetsberöv|JO-kritik|fångtransport|beläggning"),
@@ -91,9 +91,9 @@ def sentence(x):
 sections={name:[] for name,_ in TOPICS}
 sections.update({"Sverige och världen":[],"Sport":[],"Nöje":[],"Världen i korthet":[]})
 for x in unique:
- if x["source"] in ("BBC World","New York Times World","The Guardian World","Financial Times","Der Spiegel International"):
+ if x["source"] in ("BBC World","New York Times World","The Guardian World","Financial Times","Der Spiegel International","Börsrisk"):
   continue  # Internationella källor följs, men engelska/tyska texter läses inte upp oöversatta.
- x["section"]="Världen i korthet" if x["source"] in ("BBC Svenska världen",) else category(x)
+ x["section"]=category(x)
  x["score"]=score(x)
  sections[x["section"]].append(x)
 for section in sections:sections[section].sort(key=lambda x:(x["score"],x["date"]),reverse=True)
@@ -132,12 +132,22 @@ for section in ["Sverige och världen","Politik och ekonomi","Östergötland","K
   lines.append(combined(x,related_items))
   selected.extend([x]+related_items)
   used.update(y["link"] for y in [x]+related_items)
+# Internationell utblick från redaktionella svenska beskrivningar, inte sökresultat
+# som ofta bara innehåller samma rubrik flera gånger.
+world_terms=re.compile(r"ukraina|ryssland|kina|indien|usa|amerik|trump|europa|eu\b|nato|israel|gaza|iran|taiwan|afrika|asien|mellanöstern|frankrike|tyskland|britt|japan|sydkorea|pakistan|brasilien|mexiko|sudan|fn\b",re.I)
+world_items=[x for x in unique if x["source"] in ("SVT Nyheter","Dagens Nyheter","Sveriges Radio Ekot") and world_terms.search(x["title"]+" "+x["desc"]) and len(x["desc"])>=110 and x["link"] not in used and not any(related(x,y) for y in selected)]
+if world_items:
+ lines.append("\\nVärlden i korthet.")
+ for x in world_items[:4]:
+  lines.append(sentence(x))
+  selected.append(x)
+  used.add(x["link"])
 # Avsluta med en enda kort, källbelagd risknotis endast vid tydliga varningssignaler.
 # Dagliga kursrörelser och lösa spekulationer filtreras bort.
 risk_terms=re.compile(r"börsbubbla|börskrasch|börsfall|finanskris|marknadskrasch|systemrisk|kreditkris|risk för (ett )?(stort )?ras|varnar för (en )?(börs|krasch|bubbla)",re.I)
-risk_candidates=[x for x in unique if x["source"]=="Börsrisk" and risk_terms.search(x["title"]) and len(x["desc"])>=45]
+risk_candidates=[x for x in unique if x["source"] in ("SVT Nyheter","Dagens Nyheter","Sveriges Radio Ekot") and risk_terms.search(x["title"]+" "+x["desc"]) and len(x["desc"])>=130]
 if risk_candidates:
- risk_candidates=[x for x in risk_candidates if len(x["desc"])>=130 and not x["desc"].lower().startswith(x["title"].lower()[:35])]
+ risk_candidates=[x for x in risk_candidates if not x["desc"].lower().startswith(x["title"].lower()[:35])]
 if risk_candidates:
  risk_candidates.sort(key=lambda x:x["date"],reverse=True)
  alert=risk_candidates[0]
