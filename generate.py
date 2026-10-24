@@ -21,9 +21,10 @@ FEEDS={
  "BBC":"https://feeds.bbci.co.uk/news/world/rss.xml",
  "New York Times":"https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
  "Financial Times":"https://www.ft.com/rss/home",
- "Der Spiegel":"https://www.spiegel.de/international/index.rss",
- "CNN":"https://rss.cnn.com/rss/edition_world.rss",
- "Washington Post":"https://feeds.washingtonpost.com/rss/world",
+ "Der Spiegel":"https://news.google.com/rss/search?q=when%3A2d+site%3Aspiegel.de%2Finternational&hl=en-US&gl=US&ceid=US%3Aen",
+ "CNN":"https://news.google.com/rss/search?q=when%3A2d+site%3Acnn.com&hl=en-US&gl=US&ceid=US%3Aen",
+ "Publikt":"https://www.publikt.se/feeds/alla",
+ "Washington Post":"https://news.google.com/rss/search?q=when%3A2d+site%3Awashingtonpost.com&hl=en-US&gl=US&ceid=US%3Aen",
  "The Guardian":"https://www.theguardian.com/world/rss",
  "P1 Morgon":"https://api.sr.se/api/rss/program/1602",
  "SR Nyheter":"https://news.google.com/rss/search?q=site%3Asverigesradio.se%2Fartikel+when%3A2d&hl=sv&gl=SE&ceid=SE:sv",
@@ -78,7 +79,7 @@ def same(a,b):
 FOREIGN={"BBC","New York Times","Financial Times","Der Spiegel","CNN","Washington Post","The Guardian"}
 def valid(x):
  d=x["desc"]
- return len(d)>=65 and SequenceMatcher(None,x["title"].lower(),d.lower()).ratio()<.78 and not d.lower().startswith(x["title"].lower()[:40]) and not (x["source"].startswith("SR ") and len(words(d)-words(x["title"]))<7)
+ return (len(d)>=65 or (x["source"] in ("CNN","Washington Post","Der Spiegel","Publikt") and len(d)>=35)) and SequenceMatcher(None,x["title"].lower(),d.lower()).ratio()<.78 and not d.lower().startswith(x["title"].lower()[:40]) and not (x["source"].startswith("SR ") and len(words(d)-words(x["title"]))<7)
 def score(x):
  hay=x["title"]+" "+x["desc"]
  return 3+(9 if IMPORTANT.search(x["title"]) else 4 if IMPORTANT.search(hay) else 0)+(5 if WORLD.search(x["title"]) or POLITICS.search(x["title"]) else 0)+min(len(x["desc"])//140,3)-(25 if SPORT.search(x["title"]) or GOSSIP.search(x["title"]) else 0)-(18 if re.search(r"influencer|influerare|filmroll|selftape|novell|recension|krönika",x["title"],re.I) else 0)
