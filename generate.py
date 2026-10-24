@@ -157,5 +157,8 @@ if market:
  lines.append("\nBörsrisk. "+x["source"]+" rapporterar: "+x["title"].rstrip(".")+". "+detail(x)+" Utvecklingen kan förändras och är ingen säker prognos.")
  if x not in selected:selected.append(x)
 with open("report.json","w",encoding="utf-8") as f:
- json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\n".join(lines),"items":selected,"warnings":errors,"source_counts":{name:sum(x["source"]==name for x in selected) for name in FEEDS},"feed_counts":{name:sum(x["source"]==name for x in items) for name in FEEDS},"languages":"Svenska, engelska och tyska i original","method":"Redaktionellt prioriterad regelbaserad RSS-översikt, inga AI-genererade eller verifierade helartikelreferat."},f,ensure_ascii=False,indent=2)
+ json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\n".join(lines),"items":selected,"warnings":errors,"source_counts":{name:sum(x["source"]==name for x in selected) for name in FEEDS},"feed_counts":{name:sum(x["source"]==name for x in items) for name in FEEDS},"unavailable_sources":[name for name in FEEDS if not any(x["source"]==name for x in items)],"quality_check":{"international_stories":sum(1 for x in selected if x["source"] in FOREIGN),"market_alert":bool(market),"sources_represented":len(set(x["source"] for x in selected))},"languages":"Svenska, engelska och tyska i original","method":"Redaktionellt prioriterad regelbaserad RSS-översikt, inga AI-genererade eller verifierade helartikelreferat."},f,ensure_ascii=False,indent=2)
 print("Rapport klar:",len(selected),"källnotiser;",{name:sum(x["source"]==name for x in selected) for name in FEEDS})
+print("KÄLLOR UTAN NYHETER:",[name for name in FEEDS if not any(x["source"]==name for x in items)])
+print("KÄLLFEL:",errors)
+print("INTERNATIONELLA KÄLLNOTISER:",sum(x["source"] in FOREIGN for x in selected),"BÖRSNEDGÅNG ELLER RISKVARNING:",bool(market))
