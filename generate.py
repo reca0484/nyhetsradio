@@ -93,6 +93,8 @@ def sentence(x):
 sections={name:[] for name,_ in TOPICS}
 sections.update({"Sverige och världen":[],"Sport":[],"Nöje":[],"Världen i korthet":[]})
 for x in unique:
+ if x["source"] in ("BBC World","New York Times World","The Guardian World","Financial Times","Der Spiegel International"):
+  continue  # Internationella källor följs, men engelska/tyska texter läses inte upp oöversatta.
  x["section"]="Världen i korthet" if x["source"] in ("Kina","Indien","Ryssland") else category(x)
  x["score"]=score(x)
  sections[x["section"]].append(x)
@@ -116,7 +118,7 @@ selected=[]
 used=set()
 limits={"Sverige och världen":7,"Östergötland":6,"Kriminalvården":5,"Politik och ekonomi":6,"Kultur och litteratur":3,"Världen i korthet":6}
 for section in ["Sverige och världen","Politik och ekonomi","Östergötland","Kriminalvården","Kultur och litteratur","Världen i korthet"]:
- chosen=[x for x in sections[section] if x["score"]>=(-1 if section=="Världen i korthet" else 5) and len(x["desc"])>=75 and x["desc"].lower()!=x["title"].lower()][:limits[section]]
+ chosen=[x for x in sections[section] if x["score"]>=(-1 if section=="Världen i korthet" else 5) and len(x["desc"])>=(40 if section=="Världen i korthet" else 75) and x["desc"].lower()!=x["title"].lower()][:limits[section]]
  if not chosen: continue
  lines.append("\n"+section+".")
  for x in chosen:
