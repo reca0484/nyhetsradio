@@ -20,6 +20,7 @@ FEEDS={
  "Kina":"https://news.google.com/rss/search?q=Kina+when:2d&hl=sv&gl=SE&ceid=SE:sv",
  "Indien":"https://news.google.com/rss/search?q=Indien+when:2d&hl=sv&gl=SE&ceid=SE:sv",
  "Ryssland":"https://news.google.com/rss/search?q=Ryssland+when:2d&hl=sv&gl=SE&ceid=SE:sv",
+ "Börsrisk":"https://news.google.com/rss/search?q=b%C3%B6rsfall+OR+b%C3%B6rsbubbla+OR+finanskris+OR+marknadsoro+when:2d&hl=sv&gl=SE&ceid=SE:sv",
 }
 TOPICS=[
  ("Kriminalvården",r"kriminalvård|anstalt|häkte|fängelse|intagen|frihetsberöv|JO-kritik|fångtransport|beläggning"),
@@ -127,6 +128,15 @@ for section in ["Sverige och världen","Politik och ekonomi","Östergötland","K
   lines.append(combined(x,related_items))
   selected.extend([x]+related_items)
   used.update(y["link"] for y in [x]+related_items)
+# Avsluta med en enda kort, källbelagd risknotis endast vid tydliga varningssignaler.
+# Dagliga kursrörelser och lösa spekulationer filtreras bort.
+risk_terms=re.compile(r"börsbubbla|börskrasch|börsfall|finanskris|marknadskrasch|systemrisk|kreditkris|risk för (ett )?(stort )?ras|varnar för (en )?(börs|krasch|bubbla)",re.I)
+risk_candidates=[x for x in unique if x["source"]=="Börsrisk" and risk_terms.search(x["title"]) and len(x["desc"])>=45]
+if risk_candidates:
+ risk_candidates.sort(key=lambda x:x["date"],reverse=True)
+ alert=risk_candidates[0]
+ lines.append("\\nBörsrisk. "+alert["source"]+" återger uppgifter: "+alert["title"].rstrip(".")+". "+alert["desc"][:220].rstrip(" ,;:")+".")
+ selected.append(alert)
 with open("report.json","w",encoding="utf-8") as f:
  json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\n".join(lines),"items":selected,"warnings":errors,"method":"Gratis prioriterad RSS-översikt med källornas egna kortbeskrivningar; inte AI-analys eller fullständig programsammanfattning"},f,ensure_ascii=False,indent=2)
 print(f"Skrev {len(selected)} prioriterade nyhetsinslag från {len(FEEDS)-len(errors)} källor.")
