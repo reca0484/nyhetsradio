@@ -19,7 +19,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y ffmpeg
-          python -m pip install faster-whisper==1.2.1
+          python -m pip install faster-whisper==1.2.1 "av==17.1.0"
       - name: Transkribera Ekot P1 Morgon Studio Ett
         continue-on-error: true
         run: python transcribe_sr.py
