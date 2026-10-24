@@ -26,6 +26,8 @@ FEEDS={
  "Washington Post":"https://feeds.washingtonpost.com/rss/world",
  "The Guardian":"https://www.theguardian.com/world/rss",
  "P1 Morgon":"https://api.sr.se/api/rss/program/1602",
+ "SR Nyheter":"https://news.google.com/rss/search?q=site%3Asverigesradio.se%2Fartikel+when%3A2d&hl=sv&gl=SE&ceid=SE:sv",
+ "P1 Morgon nyheter":"https://news.google.com/rss/search?q=site%3Asverigesradio.se+%22P1-morgon%22+when%3A2d&hl=sv&gl=SE&ceid=SE:sv",
 }
 LOCAL=re.compile(r"östergöt|linköping|norrköping|motala|mjölby|finspång|vadstena|söderköping|kinda|åtvidaberg|valdemarsvik|ydre|boxholm|ödeshög",re.I)
 PRISON=re.compile(r"kriminalvård|anstalt|häkte|fängelse|intagen|fångtransport|frihetsberöv",re.I)
@@ -35,7 +37,8 @@ POLITICS=re.compile(r"regering|riksdag|minister|partiledare|budget|ränta|inflat
 IMPORTANT=re.compile(r"krig|attack|vapenvila|fred|kris|katastrof|omkom|död|domstol|åtal|beslut|säkerhet|strejk|klimat|utredning|förhandling",re.I)
 SPORT=re.compile(r"fotboll|ishockey|allsvenskan|tennis|olympiad|idrott|mästerskap|sportchef",re.I)
 GOSSIP=re.compile(r"influencer|realitystjärna|kändisbråk|dejtar|skilsmässorykte|paradise hotel",re.I)
-MARKET=re.compile(r"börsbubbla|börskrasch|börsfall|finanskris|marknadskrasch|systemrisk|kreditkris|risk för börsras|varnar för börsfall|market crash|stock market bubble|market correction|sell.off|financial crisis|market risk|financial instability|Aktienblase|Börsencrash|Finanzkrise|Marktrisiko",re.I)
+MARKET=re.compile(r"börs|aktiemarknad|akti(e|er|erna)|marknadsoro|räntechock|bankkris|stock market|stocks|shares|equities|market sell.off|market correction|market crash|financial crisis|bond yields|Aktien|Börse|Börsen|Finanzkrise|Marktrisiko",re.I)
+DOWNTURN=re.compile(r"fall|ras|nedgång|sjunk|backar|tapp|oro|risk|varn|krasch|kris|bubbla|press|sell.off|slump|plunge|decline|drop|falling|downturn|crash|risk|warning|fears|losses|tumble|fallen|sturz|einbruch|sinkt|verlust|krise|risiko",re.I)
 STOP=set("och att det den ett med för från till som har hade efter över under inte detta enligt säger uppger nya nytt stora sverige världen rapporterar".split())
 
 def clean(s):
@@ -75,7 +78,7 @@ def same(a,b):
 FOREIGN={"BBC","New York Times","Financial Times","Der Spiegel","CNN","Washington Post","The Guardian"}
 def valid(x):
  d=x["desc"]
- return len(d)>=65 and SequenceMatcher(None,x["title"].lower(),d.lower()).ratio()<.78 and not d.lower().startswith(x["title"].lower()[:40])
+ return len(d)>=65 and SequenceMatcher(None,x["title"].lower(),d.lower()).ratio()<.78 and not d.lower().startswith(x["title"].lower()[:40]) and not (x["source"].startswith("SR ") and len(words(d)-words(x["title"]))<7)
 def score(x):
  hay=x["title"]+" "+x["desc"]
  return 3+(9 if IMPORTANT.search(x["title"]) else 4 if IMPORTANT.search(hay) else 0)+(5 if WORLD.search(x["title"]) or POLITICS.search(x["title"]) else 0)+min(len(x["desc"])//140,3)-(25 if SPORT.search(x["title"]) or GOSSIP.search(x["title"]) else 0)-(18 if re.search(r"influencer|influerare|filmroll|selftape|novell|recension|krönika",x["title"],re.I) else 0)
@@ -148,10 +151,10 @@ if "Internationell utblick" not in emitted:
  lines.append("\nInternationell utblick. Inga internationella nyheter med tillräckligt underlag kunde väljas.")
 
 # Börsnotis kräver substans. Rubrikträffar utan förklaring utelämnas.
-market=[g[0] for g in groups if MARKET.search(g[0]["title"]+" "+g[0]["desc"]) and len(g[0]["desc"])>=120]
+market=[g[0] for g in groups if MARKET.search(g[0]["title"]+" "+g[0]["desc"]) and DOWNTURN.search(g[0]["title"]+" "+g[0]["desc"]) and len(g[0]["desc"])>=90]
 if market:
  x=sorted(market,key=lambda x:(score(x),x["date"]),reverse=True)[0]
- lines.append("\nBörsrisk. "+x["source"]+" rapporterar: "+x["title"].rstrip(".")+". "+detail(x)+" Det är en riskbedömning, inte en säker prognos.")
+ lines.append("\nBörsrisk. "+x["source"]+" rapporterar: "+x["title"].rstrip(".")+". "+detail(x)+" Utvecklingen kan förändras och är ingen säker prognos.")
  if x not in selected:selected.append(x)
 with open("report.json","w",encoding="utf-8") as f:
  json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\n".join(lines),"items":selected,"warnings":errors,"source_counts":{name:sum(x["source"]==name for x in selected) for name in FEEDS},"feed_counts":{name:sum(x["source"]==name for x in items) for name in FEEDS},"languages":"Svenska, engelska och tyska i original","method":"Redaktionellt prioriterad regelbaserad RSS-översikt, inga AI-genererade eller verifierade helartikelreferat."},f,ensure_ascii=False,indent=2)
