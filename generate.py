@@ -14,8 +14,10 @@ FEEDS={
  "SVT":"https://www.svt.se/nyheter/rss.xml",
  "SVT Öst":"https://www.svt.se/nyheter/lokalt/ost/rss.xml",
  "DN":"https://www.dn.se/rss/",
+ "Svenska Dagbladet":"https://www.svd.se/feed/articles.rss",
+ "Sydsvenskan":"https://www.sydsvenskan.se/feeds/feed.xml",
  "Expressen":"https://feeds.expressen.se/nyheter/",
- "Aftonbladet":"https://rss.aftonbladet.se/rss2/small/pages/sections/nyheter/",
+ "Aftonbladet":"https://rss.aftonbladet.se/rss2/small/pages/sections/senastenytt/",
  "BBC":"https://feeds.bbci.co.uk/news/world/rss.xml",
  "New York Times":"https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
  "Financial Times":"https://www.ft.com/rss/home",
@@ -63,7 +65,7 @@ def fetch(pair):
  return result
 
 items=[];errors=[]
-with ThreadPoolExecutor(max_workers=4) as pool:
+with ThreadPoolExecutor(max_workers=10) as pool:
  futures={pool.submit(fetch,p):p[0] for p in FEEDS.items()}
  for future in as_completed(futures):
   try:items+=future.result()
