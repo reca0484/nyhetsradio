@@ -112,7 +112,7 @@ selected=[];used=set()
 limits={"Sverige och världen":7,"Politik och ekonomi":7,"Östergötland":6,"Kriminalvården":5,"Kultur och litteratur":3,"Internationell utblick":5}
 def add_group(g,heading):
  if id(g) in used:return False
- if heading not in emitted:lines.append("\\n"+heading+".");emitted.add(heading)
+ if heading not in emitted:lines.append("\n"+heading+".");emitted.add(heading)
  lines.append(story(g[0],g[1:]))
  selected.extend(g);used.add(id(g))
  return True
@@ -126,14 +126,14 @@ world_groups=[g for g in groups if WORLD.search(g[0]["title"]+" "+g[0]["desc"]) 
 world_groups.sort(key=lambda g:(score(g[0]),g[0]["date"]),reverse=True)
 for g in world_groups[:5]:add_group(g,"Internationell utblick")
 if "Internationell utblick" not in emitted:
- lines.append("\\nInternationell utblick. De tillgängliga svenska nyhetsflödena innehöll inga ytterligare självständiga internationella händelser med tillräcklig bakgrund för en tillförlitlig sammanfattning.")
+ lines.append("\nInternationell utblick. De tillgängliga svenska nyhetsflödena innehöll inga ytterligare självständiga internationella händelser med tillräcklig bakgrund för en tillförlitlig sammanfattning.")
 
 # Börsnotis kräver substans. Rubrikträffar utan förklaring utelämnas.
 market=[g[0] for g in groups if MARKET.search(g[0]["title"]+" "+g[0]["desc"]) and len(g[0]["desc"])>=180]
 if market:
  x=sorted(market,key=lambda x:(score(x),x["date"]),reverse=True)[0]
- lines.append("\\nBörsrisk. "+x["source"]+" rapporterar: "+x["title"].rstrip(".")+". "+detail(x)+" Det är en riskbedömning, inte en säker prognos.")
+ lines.append("\nBörsrisk. "+x["source"]+" rapporterar: "+x["title"].rstrip(".")+". "+detail(x)+" Det är en riskbedömning, inte en säker prognos.")
  if x not in selected:selected.append(x)
 with open("report.json","w",encoding="utf-8") as f:
- json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\\n".join(lines),"items":selected,"warnings":errors,"source_counts":{name:sum(x["source"]==name for x in selected) for name in FEEDS},"method":"Redaktionellt prioriterad regelbaserad RSS-översikt, inga AI-genererade eller verifierade helartikelreferat."},f,ensure_ascii=False,indent=2)
+ json.dump({"updated":NOW.strftime("%Y-%m-%d %H:%M %Z"),"text":"\n".join(lines),"items":selected,"warnings":errors,"source_counts":{name:sum(x["source"]==name for x in selected) for name in FEEDS},"method":"Redaktionellt prioriterad regelbaserad RSS-översikt, inga AI-genererade eller verifierade helartikelreferat."},f,ensure_ascii=False,indent=2)
 print("Rapport klar:",len(selected),"källnotiser;",{name:sum(x["source"]==name for x in selected) for name in FEEDS})
