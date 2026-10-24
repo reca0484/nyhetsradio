@@ -17,10 +17,7 @@ FEEDS={
  "The Guardian World":"https://www.theguardian.com/world/rss",
  "Financial Times":"https://www.ft.com/rss/home",
  "Der Spiegel International":"https://www.spiegel.de/international/index.rss",
- "Kina":"https://news.google.com/rss/search?q=Kina+when:2d&hl=sv&gl=SE&ceid=SE:sv",
- "Indien":"https://news.google.com/rss/search?q=Indien+when:2d&hl=sv&gl=SE&ceid=SE:sv",
- "Ryssland":"https://news.google.com/rss/search?q=Ryssland+when:2d&hl=sv&gl=SE&ceid=SE:sv",
- "Börsrisk":"https://news.google.com/rss/search?q=b%C3%B6rsfall+OR+b%C3%B6rsbubbla+OR+finanskris+OR+marknadsoro+when:2d&hl=sv&gl=SE&ceid=SE:sv",
+ "BBC Svenska världen":"https://news.google.com/rss/search?q=site%3Abbc.com%2Fnews+world+when%3A2d&hl=sv&gl=SE&ceid=SE:sv",
 }
 TOPICS=[
  ("Kriminalvården",r"kriminalvård|anstalt|häkte|fängelse|intagen|frihetsberöv|JO-kritik|fångtransport|beläggning"),
@@ -96,7 +93,7 @@ sections.update({"Sverige och världen":[],"Sport":[],"Nöje":[],"Världen i kor
 for x in unique:
  if x["source"] in ("BBC World","New York Times World","The Guardian World","Financial Times","Der Spiegel International"):
   continue  # Internationella källor följs, men engelska/tyska texter läses inte upp oöversatta.
- x["section"]="Världen i korthet" if x["source"] in ("Kina","Indien","Ryssland") else category(x)
+ x["section"]="Världen i korthet" if x["source"] in ("BBC Svenska världen",) else category(x)
  x["score"]=score(x)
  sections[x["section"]].append(x)
 for section in sections:sections[section].sort(key=lambda x:(x["score"],x["date"]),reverse=True)
@@ -118,13 +115,14 @@ lines=[f"{NOW.day} {months[NOW.month-1]} {NOW.year}."]
 selected=[]
 used=set()
 world_subjects=set()
-limits={"Sverige och världen":7,"Östergötland":6,"Kriminalvården":5,"Politik och ekonomi":6,"Kultur och litteratur":3,"Världen i korthet":6}
+limits={"Sverige och världen":7,"Östergötland":6,"Kriminalvården":5,"Politik och ekonomi":6,"Kultur och litteratur":3,"Världen i korthet":4}
 for section in ["Sverige och världen","Politik och ekonomi","Östergötland","Kriminalvården","Kultur och litteratur","Världen i korthet"]:
  chosen=[x for x in sections[section] if x["score"]>=(-1 if section=="Världen i korthet" else 5) and len(x["desc"])>=(40 if section=="Världen i korthet" else 75) and x["desc"].lower()!=x["title"].lower()][:limits[section]]
  if not chosen: continue
  lines.append("\n"+section+".")
  for x in chosen:
   if x["link"] in used or any(related(x,y) for y in selected):continue
+  if section=="Världen i korthet" and (len(x["desc"])<110 or x["desc"].lower().startswith(x["title"].lower()[:35]) or "vietnam.vn" in (x["title"]+" "+x["desc"]).lower()):continue
   if section=="Världen i korthet":
    people=[name for name in ("melania trump","donald trump","putin","zelenskyj","xi jinping","modi") if name in (x["title"]+" "+x["desc"]).lower()]
    if any(name in world_subjects for name in people):continue
@@ -138,6 +136,8 @@ for section in ["Sverige och världen","Politik och ekonomi","Östergötland","K
 # Dagliga kursrörelser och lösa spekulationer filtreras bort.
 risk_terms=re.compile(r"börsbubbla|börskrasch|börsfall|finanskris|marknadskrasch|systemrisk|kreditkris|risk för (ett )?(stort )?ras|varnar för (en )?(börs|krasch|bubbla)",re.I)
 risk_candidates=[x for x in unique if x["source"]=="Börsrisk" and risk_terms.search(x["title"]) and len(x["desc"])>=45]
+if risk_candidates:
+ risk_candidates=[x for x in risk_candidates if len(x["desc"])>=130 and not x["desc"].lower().startswith(x["title"].lower()[:35])]
 if risk_candidates:
  risk_candidates.sort(key=lambda x:x["date"],reverse=True)
  alert=risk_candidates[0]
