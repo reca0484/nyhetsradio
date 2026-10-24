@@ -81,7 +81,7 @@ def same(a,b):
 FOREIGN={"BBC","New York Times","Financial Times","Der Spiegel","CNN","Washington Post","The Guardian"}
 def valid(x):
  d=x["desc"]
- return (len(d)>=65 or (x["source"] in ("CNN","Washington Post","Der Spiegel","Publikt") and len(d)>=35)) and SequenceMatcher(None,x["title"].lower(),d.lower()).ratio()<.78 and not (d.lower().startswith(x["title"].lower()[:40]) and not x["source"].endswith(" podd")) and not (x["source"].startswith("SR ") and len(words(d)-words(x["title"]))<7)
+ return (len(d)>=65 or x["source"] in ("Ekot","P1 Morgon","Studio Ett") or (x["source"] in ("CNN","Washington Post","Der Spiegel","Publikt") and len(d)>=35)) and SequenceMatcher(None,x["title"].lower(),d.lower()).ratio()<.78 and not (d.lower().startswith(x["title"].lower()[:40]) and x["source"] not in ("Ekot","P1 Morgon","Studio Ett") and not x["source"].endswith(" podd")) and not (x["source"].startswith("SR ") and len(words(d)-words(x["title"]))<7)
 def score(x):
  hay=x["title"]+" "+x["desc"]
  return 3+(9 if IMPORTANT.search(x["title"]) else 4 if IMPORTANT.search(hay) else 0)+(5 if WORLD.search(x["title"]) or POLITICS.search(x["title"]) else 0)+min(len(x["desc"])//140,3)-(25 if SPORT.search(x["title"]) or GOSSIP.search(x["title"]) else 0)-(18 if re.search(r"influencer|influerare|filmroll|selftape|novell|recension|krönika",x["title"],re.I) else 0)
@@ -95,6 +95,7 @@ def section(x):
  return "Sverige och världen"
 def detail(x):
  d=x["desc"].strip()
+ if x["source"] in ("Ekot","P1 Morgon","Studio Ett") and (SequenceMatcher(None,x["title"].lower(),d.lower()).ratio()>.65 or len(d)<55):return "Nyheten finns hos Sveriges Radio. Mer information i källänken."
  if len(d)>620:
   chunk=d[:620];end=max(chunk.rfind("."),chunk.rfind("!"),chunk.rfind("?"))
   d=chunk[:end+1] if end>260 else chunk.rsplit(" ",1)[0]+"."
@@ -136,6 +137,12 @@ def add_group(g,heading):
  selected.extend(g);used.add(id(g));source_usage[g[0]["source"]]+=1
  return True
 emitted=set()
+# Säkerställ representation av SR när relevant material faktiskt hämtats.
+for sr_source in ("Ekot","P1 Morgon","Studio Ett"):
+ sr_pool=[g for g in groups if any(x["source"]==sr_source for x in g)]
+ sr_pool.sort(key=lambda g:(max(score(x) for x in g if x["source"]==sr_source),g[0]["date"]),reverse=True)
+ for g in sr_pool[:(3 if sr_source=="Ekot" else 2)]:
+  if id(g) not in used:add_group(g,section(g[0]))
 for heading in ("Sverige och världen","Politik och ekonomi","Östergötland","Kriminalvården","Kultur och litteratur"):
  pool=[g for g in buckets[heading] if not (g[0]["source"] in FOREIGN or WORLD.search(g[0]["title"]+" "+g[0]["desc"])) or heading in ("Östergötland","Kriminalvården")]
  for _ in range(limits[heading]):
