@@ -1,26 +1,62 @@
 {
-  "updated": "2026-10-24T22:05:32.485111+02:00",
+  "updated": "2026-10-25T10:31:11.606072+01:00",
   "episodes": [
     {
       "source": "Ekot",
-      "title": "Ekot 22:00",
-      "date": "2026-10-24T22:00:00+02:00",
-      "link": "https://www.sverigesradio.se/avsnitt/2881489",
-      "audio": "https://static-cdn.sr.se/laddahem/ljudit/p1/ekot_2200/2026/10/ekot_2200_20261024_2200_128.mp3",
+      "title": "Ekot 08:00",
+      "date": "2026-10-25T08:00:00+01:00",
+      "link": "https://www.sverigesradio.se/avsnitt/2881493",
+      "audio": "https://static-cdn.sr.se/laddahem/ljudit/p1/ekot_0800/2026/10/ekot_0800_20261025_0800_128.mp3",
       "transcribed": true,
-      "segments_count": 61,
+      "segments_count": 59,
       "excerpts": [
         {
-          "start": 133,
-          "text": "Den italieniska städder har det pågått en demonstrationnare i dag."
+          "start": 0,
+          "text": "Komar man här det är kort. Den är långdrag när regeringens bildningen gör att kommunen"
         },
         {
-          "start": 149,
-          "text": "Utans personer i protest mot NATO och vi ett tillfället vingad sig"
+          "start": 5,
+          "text": "och regioner har svårt att planera sina verksamheter."
         },
         {
-          "start": 153,
-          "text": "demonstranter i genom avsperningarna till det arkeologiska området kring kollussion."
+          "start": 11,
+          "text": "Häll Riksson, ordförande i organisationen, Sveriges kommuner och regioner."
+        },
+        {
+          "start": 15,
+          "text": "Det finns en osäkerhet när det gäller till exempel ett antal satsningar som har gjort på vilket sätt påverkast omkommande."
+        },
+        {
+          "start": 22,
+          "text": "Men också en osäkerhet kring ombudget på sessad röj och satsningar."
+        },
+        {
+          "start": 29,
+          "text": "Jag kommer väl ett senk på då och då innebär att det är väldigt svårt som kommer under dig i ordet använda någon resurserna."
+        },
+        {
+          "start": 45,
+          "text": "Om vi sjeter en för kommuner och regioner handlar om något annat sig hand."
+        },
+        {
+          "start": 50,
+          "text": "Brider nya satsningar på skola vård och omg så är det."
+        },
+        {
+          "start": 53,
+          "text": "Vad händer de riktade bidrag som läper ut om den slutiltiga budgeten dröger?"
+        },
+        {
+          "start": 59,
+          "text": "Det sjutom färgen på den nya regeringen avgör också vilken typ av satsningar det kan bli?"
+        },
+        {
+          "start": 65,
+          "text": "Det klart är en ny regering, vill ju säkert också sätta sin på fil på satsningar på välfärden."
+        },
+        {
+          "start": 74,
+          "text": "Och världret bolå har dragit in överdelar av landet, kraftiga vinder och rängen väntas."
         }
       ]
     },
