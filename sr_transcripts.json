@@ -1,6 +1,89 @@
 {
-  "updated": "2026-10-27T10:40:23.399461+01:00",
+  "updated": "2026-10-27T11:36:59.733491+01:00",
   "episodes": [
+    {
+      "source": "Ekot",
+      "title": "Ekot 08:00 Kritik mot Skolverkets gymnasieförslag",
+      "date": "2026-10-27T08:00:00+01:00",
+      "link": "https://www.sverigesradio.se/avsnitt/ekot-0800-kritik-mot-skolverkets-gymnasieforslag",
+      "audio": "https://static-cdn.sr.se/laddahem/ljudit/p1/ekot_0800/2026/10/ekot_0800_20261027_0800_128.mp3",
+      "transcribed": true,
+      "segments_count": 187,
+      "excerpts": [
+        {
+          "start": 2,
+          "text": "Sverige försöker skjudas en av vapen transporter till Ukraina från Ryskassa-"
+        },
+        {
+          "start": 9,
+          "text": "Varlokalen är Israel har öppnat och i USA ger sig tidigare presidenten-"
+        },
+        {
+          "start": 14,
+          "text": "-bärak och Bama, se in i slutsporten inför mellan årsvalet."
+        },
+        {
+          "start": 64,
+          "text": "Därför borde platserna på en del yrkesprogram öka."
+        },
+        {
+          "start": 68,
+          "text": "Samtidigt som de högskolor förbereda de programmen ekonomisammer ett svätenskaple och estetisk."
+        },
+        {
+          "start": 75,
+          "text": "Borde minska det för att många elever som läser på något av de"
+        },
+        {
+          "start": 160,
+          "text": "Är det påorter och katar ena hälmarsson?"
+        },
+        {
+          "start": 163,
+          "text": "Ryssland är intensifierar försköket saboterad ansvänskatransporterna till Ukraina."
+        },
+        {
+          "start": 170,
+          "text": "Särskilt utsatt en logistikhub i pålen."
+        },
+        {
+          "start": 179,
+          "text": "Särer Larsson, Jonsson, logistikskef, på försvaret."
+        },
+        {
+          "start": 183,
+          "text": "Det finns en hårt bild. Ryssland säger det här som..."
+        },
+        {
+          "start": 189,
+          "text": "De tycker inte om det här är ett enkelt."
+        },
+        {
+          "start": 213,
+          "text": "Man jobbar i mycket med proxis."
+        },
+        {
+          "start": 220,
+          "text": "Under stött sig från Ryssland."
+        },
+        {
+          "start": 223,
+          "text": "Använda andra grupperingen."
+        },
+        {
+          "start": 275,
+          "text": "Perskoglund till på den gräns."
+        },
+        {
+          "start": 278,
+          "text": "Han är då sämt att expert på militär logistik på försvarsökskolan."
+        },
+        {
+          "start": 282,
+          "text": "Uret riskperpektiv sig över tillgången om att det här har man övervägt hela tiden."
+        }
+      ]
+    },
     {
       "source": "P1 Morgon",
       "title": "Israel går till val, EU överens om nya fiskekvoter och hållbart halloweenpynt",
@@ -169,7 +252,6 @@
     }
   ],
   "warnings": [
-    "Ekot: IncompleteRead: IncompleteRead(426861 bytes read)",
     "P4 Östergötland: inga tillgängliga färska ljudavsnitt"
   ]
 }
