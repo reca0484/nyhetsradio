@@ -1,6 +1,89 @@
 {
-  "updated": "2026-10-28T10:50:33.853610+01:00",
+  "updated": "2026-10-28T11:45:12.020168+01:00",
   "episodes": [
+    {
+      "source": "Ekot",
+      "title": "Ekot 08:00 Allt fler vistelseförbud",
+      "date": "2026-10-28T08:00:00+01:00",
+      "link": "https://www.sverigesradio.se/avsnitt/ekot-0800-allt-fler-vistelseforbud",
+      "audio": "https://static-cdn.sr.se/laddahem/ljudit/p1/ekot_0800/2026/10/ekot_0800_20261028_0800_128.mp3",
+      "transcribed": true,
+      "segments_count": 193,
+      "excerpts": [
+        {
+          "start": 24,
+          "text": "Och så pågår den utränstning av olika tänkande från liberalerna anser interna kritiker."
+        },
+        {
+          "start": 31,
+          "text": "Men vi börjar med valet i Israel. Det preliminär av val resultatet pekar på ett gemtläge mellan regeringsplocke och opositionen."
+        },
+        {
+          "start": 41,
+          "text": "Men primärminister Benja Minnetan, jag och fyra det innat att han spartir likode ser ut att bli störst."
+        },
+        {
+          "start": 139,
+          "text": "–som i strällerna voknar upp till i dag."
+        },
+        {
+          "start": 142,
+          "text": "I ovis eftersom inget block har tydligt många mandat för att billar regering."
+        },
+        {
+          "start": 148,
+          "text": "Men det är ändå en överraskning–"
+        },
+        {
+          "start": 171,
+          "text": "Men kanske där mot delvis belynare–"
+        },
+        {
+          "start": 174,
+          "text": "–har honom för att försvagat i sträilsfjender i krigen–"
+        },
+        {
+          "start": 178,
+          "text": "–mot Hammass i Rön och Hysbola."
+        },
+        {
+          "start": 197,
+          "text": "Nu är ju inte det väldigt sultatet helt fast slaget."
+        },
+        {
+          "start": 201,
+          "text": "Går att säga nånting om Israel kommer att fära andra av det här valet."
+        },
+        {
+          "start": 208,
+          "text": "Det blir allys på varje blivit."
+        },
+        {
+          "start": 220,
+          "text": "det den stora överraskningen."
+        },
+        {
+          "start": 223,
+          "text": "Hölja valdeltagandet bland Israel's arabiska väljer."
+        },
+        {
+          "start": 226,
+          "text": "Palistiner, Mr. Elysmede och Erskap, som utgör 20 procent av befolkningen."
+        },
+        {
+          "start": 231,
+          "text": "De har möjlighet att stödja oppositionen parlamentariskt,"
+        },
+        {
+          "start": 238,
+          "text": "–att positionen kan bilda regering med stöd av de arabiska partierna–"
+        },
+        {
+          "start": 243,
+          "text": "–hälst så skulle de kanske vilja ingå i en regering–"
+        }
+      ]
+    },
     {
       "source": "P1 Morgon",
       "title": "Israeliska valet i fokus – Jämn kamp mellan Netanyahu och Eisenkot och arabiska partier kan bli vågmästare",
@@ -169,7 +252,6 @@
     }
   ],
   "warnings": [
-    "Ekot: IncompleteRead: IncompleteRead(1721806 bytes read)",
     "P4 Östergötland: inga tillgängliga färska ljudavsnitt"
   ]
 }
