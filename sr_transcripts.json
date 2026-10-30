@@ -1,6 +1,89 @@
 {
-  "updated": "2026-10-30T10:52:06.610779+01:00",
+  "updated": "2026-10-30T11:45:16.390196+01:00",
   "episodes": [
+    {
+      "source": "Ekot",
+      "title": "Ekot 08:00 Förtidsröstningen slår rekord i USA inför mellanårsvalet",
+      "date": "2026-10-30T08:00:00+01:00",
+      "link": "https://www.sverigesradio.se/avsnitt/ekot-0800-fortidsrostningen-slar-rekord-i-usa-infor-mellanarsvalet",
+      "audio": "https://static-cdn.sr.se/laddahem/ljudit/p1/ekot_0800/2026/10/ekot_0800_20261030_0800_128.mp3",
+      "transcribed": true,
+      "segments_count": 187,
+      "excerpts": [
+        {
+          "start": 0,
+          "text": "Det är en regering, så är det växa bland svenska folket."
+        },
+        {
+          "start": 5,
+          "text": "Vi har besökt en av den ukrainska armeens hemligad rönarbaser och metallåtervinning från krematorer"
+        },
+        {
+          "start": 20,
+          "text": "Och först till oppinionen kring de pågående för öknatbildarering."
+        },
+        {
+          "start": 25,
+          "text": "Mådståndet mot att låta vänsterpartiet ta plats i en regeringe växer."
+        },
+        {
+          "start": 31,
+          "text": "2 av 5 väljerades i en unni till en sådan utveckling."
+        },
+        {
+          "start": 49,
+          "text": "men också till vinstelplanet, sen till på det en så väljer."
+        },
+        {
+          "start": 51,
+          "text": "42 % av svenskarna vill inte att den stäparitetta plats i en regering på bara ett halvår har siffran ökat med cirka 10 % i en heter."
+        },
+        {
+          "start": 62,
+          "text": "Flervalt så positiv att till att vänsta partiet skulle sitta i regering innanvalet ännu efter."
+        },
+        {
+          "start": 68,
+          "text": "John Torelle professor i statvetenskap vid Stockholm's universitet tror att utvecklingen kan hänga ihop med den tryggar regeringssbildningsprocessen."
+        },
+        {
+          "start": 77,
+          "text": "Det skulle vara att det fler som man fått ögonen på."
+        },
+        {
+          "start": 93,
+          "text": "Det har jag med det som pågår just nu."
+        },
+        {
+          "start": 96,
+          "text": "Samtidigt ökar stödet för att miljöpartisia tar plats i arregering."
+        },
+        {
+          "start": 99,
+          "text": "I mars sa 30 % av väljerna niv."
+        },
+        {
+          "start": 123,
+          "text": "Det kan göra med att man inte är en divan."
+        },
+        {
+          "start": 125,
+          "text": "Det är det som flest väljare vill hålla utan för regeringen i ett år."
+        },
+        {
+          "start": 132,
+          "text": "Till de är närmare hel efterna valar väljer en ej."
+        },
+        {
+          "start": 463,
+          "text": "–och vår konsponent har besökt en såndröner i enhet."
+        },
+        {
+          "start": 470,
+          "text": "I mörkret på ett fält i Nordröstra Ukraina står ni i ålongdistan's drönera redofar uppdrag."
+        }
+      ]
+    },
     {
       "source": "P1 Morgon",
       "title": "Konflikten i SD, Finlands aktiva roll i världspolitiken och talmannens oväntade drag",
@@ -83,93 +166,10 @@
           "text": "kanske särskilt och en liten bit högre ut eller bland sämt i väljare."
         }
       ]
-    },
-    {
-      "source": "Studio Ett",
-      "title": "Star Trek-ikonen död, Google brottsutreds i Finland, omröstning om Thand Ringqvist (C)",
-      "date": "2026-10-29T22:12:00+01:00",
-      "link": "https://www.sverigesradio.se/avsnitt/star-trek-ikonen-dod-google-brottsutreds-i-finland-omrostning-om-thand-ringqvist-c",
-      "audio": "https://static-cdn.sr.se/laddahem/ljudit/p1/studio_ett/2026/10/studio_ett_20261029_2212_128.mp3",
-      "transcribed": true,
-      "segments_count": 1035,
-      "excerpts": [
-        {
-          "start": 289,
-          "text": "Han hade ju från 1996-1982, så var en del av de Royal Shakespeare Company."
-        },
-        {
-          "start": 295,
-          "text": "När man är skolad som skåde spelare på det sättet, så är det svårt att tvätta ut om ränder."
-        },
-        {
-          "start": 305,
-          "text": "Det som kanske ger har nån den här ting den här handlar om att leverera av upplyckor som är ganska så knöliga konstiga siffa i koncept."
-        },
-        {
-          "start": 761,
-          "text": "Välkommer till de kommunerna."
-        },
-        {
-          "start": 763,
-          "text": "Det här ekonomin kan kinderas bra och sysselsättningen inte så hög."
-        },
-        {
-          "start": 767,
-          "text": "Så där välkomnar man ju det här med öppna armar."
-        },
-        {
-          "start": 865,
-          "text": "Finan är det kanske det var en av vi."
-        },
-        {
-          "start": 867,
-          "text": "Nu har det regeringen också lagt fram en skarpare förslaget."
-        },
-        {
-          "start": 871,
-          "text": "Man har faktiskt förästlarat om den här miljökonsekvens bedömningen"
-        },
-        {
-          "start": 880,
-          "text": "Missdanks har gjort så så kom att kan det i framdelningen också lera"
-        },
-        {
-          "start": 883,
-          "text": "till distraft i bötare eller fängelse."
-        },
-        {
-          "start": 886,
-          "text": "Det känner från i nu läget där det liksom inte med hur lite"
-        },
-        {
-          "start": 935,
-          "text": "Nu landar jag över till eftermedagens studiet som på gramlades av mornikasarinen och kylena grål."
-        },
-        {
-          "start": 942,
-          "text": "Lysavvet Andring finns som derade som bekant för en mitten regering under ledning av Magdalena Andersson."
-        },
-        {
-          "start": 955,
-          "text": "Man kan förtycka att det hade varit logiskt att en statsministeromröstning om"
-        },
-        {
-          "start": 961,
-          "text": "Samtidigt var det inte Magnet Andersson själv som som det gör."
-        },
-        {
-          "start": 965,
-          "text": "En mitt en regering är inte händring."
-        },
-        {
-          "start": 967,
-          "text": "I första handsträver efter att bilda."
-        }
-      ]
     }
   ],
   "warnings": [
-    "Ekot: TimeoutError: The read operation timed out",
+    "Studio Ett: IncompleteRead: IncompleteRead(1721815 bytes read)",
     "P4 Östergötland: inga tillgängliga färska ljudavsnitt"
   ]
 }
