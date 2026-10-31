@@ -1,175 +1,175 @@
 {
-  "updated": "2026-10-30T11:45:16.390196+01:00",
+  "updated": "2026-10-31T10:39:46.175374+01:00",
   "episodes": [
     {
-      "source": "Ekot",
-      "title": "Ekot 08:00 Förtidsröstningen slår rekord i USA inför mellanårsvalet",
-      "date": "2026-10-30T08:00:00+01:00",
-      "link": "https://www.sverigesradio.se/avsnitt/ekot-0800-fortidsrostningen-slar-rekord-i-usa-infor-mellanarsvalet",
-      "audio": "https://static-cdn.sr.se/laddahem/ljudit/p1/ekot_0800/2026/10/ekot_0800_20261030_0800_128.mp3",
+      "source": "P1 Morgon",
+      "title": "Konflikt om Polens författningsdomstol, EU:s väg framåt och datacenter i Texas",
+      "date": "2026-10-31T08:05:00+01:00",
+      "link": "https://www.sverigesradio.se/avsnitt/konflikt-om-polens-forfattningsdomstol-eus-vag-framat-och-datacenter-i-texas",
+      "audio": "https://static-cdn.sr.se/laddahem/ljudit/p1/p1_morgon/2026/10/p1_morgon_20261031_0805_128.mp3",
       "transcribed": true,
-      "segments_count": 187,
+      "segments_count": 694,
       "excerpts": [
         {
-          "start": 0,
-          "text": "Det är en regering, så är det växa bland svenska folket."
-        },
-        {
-          "start": 5,
-          "text": "Vi har besökt en av den ukrainska armeens hemligad rönarbaser och metallåtervinning från krematorer"
-        },
-        {
-          "start": 20,
-          "text": "Och först till oppinionen kring de pågående för öknatbildarering."
-        },
-        {
-          "start": 25,
-          "text": "Mådståndet mot att låta vänsterpartiet ta plats i en regeringe växer."
-        },
-        {
-          "start": 31,
-          "text": "2 av 5 väljerades i en unni till en sådan utveckling."
-        },
-        {
-          "start": 49,
-          "text": "men också till vinstelplanet, sen till på det en så väljer."
-        },
-        {
-          "start": 51,
-          "text": "42 % av svenskarna vill inte att den stäparitetta plats i en regering på bara ett halvår har siffran ökat med cirka 10 % i en heter."
+          "start": 56,
+          "text": "Domstolen sjujer för att President har stängt av att det istället är en annan domare en kvinna"
         },
         {
           "start": 62,
-          "text": "Flervalt så positiv att till att vänsta partiet skulle sitta i regering innanvalet ännu efter."
+          "text": "utsada av den nu varende regeringen som tar över den här rollen."
         },
         {
-          "start": 68,
-          "text": "John Torelle professor i statvetenskap vid Stockholm's universitet tror att utvecklingen kan hänga ihop med den tryggar regeringssbildningsprocessen."
+          "start": 66,
+          "text": "Och det här utlust en normal regioner tusen tas, både de omstantar men också politiker och faktiskt ändå"
         },
         {
-          "start": 77,
-          "text": "Det skulle vara att det fler som man fått ögonen på."
+          "start": 73,
+          "text": "på partiläder nivå från hela hög i sida när det på ska parlamentet samlades för att produistera."
         },
         {
-          "start": 93,
-          "text": "Det har jag med det som pågår just nu."
+          "start": 79,
+          "text": "mot det här gerandet då från regeringen. Det var också så att regeringen hade tillkallat"
         },
         {
-          "start": 96,
-          "text": "Samtidigt ökar stödet för att miljöpartisia tar plats i arregering."
+          "start": 84,
+          "text": "kravall polis till de stolen byggnad. Så det som händer var de hade"
         },
         {
-          "start": 99,
-          "text": "I mars sa 30 % av väljerna niv."
+          "start": 162,
+          "text": "Men det här höll ju absolut inte den dåvarande oppositionen."
         },
         {
-          "start": 123,
-          "text": "Det kan göra med att man inte är en divan."
+          "start": 166,
+          "text": "Nu var det regeringen med om de var en valet 2033 och lovade då."
         },
         {
-          "start": 125,
-          "text": "Det är det som flest väljare vill hålla utan för regeringen i ett år."
+          "start": 171,
+          "text": "Som de menar återupprättad de stålens oberoende."
         },
         {
-          "start": 132,
-          "text": "Till de är närmare hel efterna valar väljer en ej."
+          "start": 181,
+          "text": "Sen man var en 2033 av många olika anledningar."
         },
         {
-          "start": 463,
-          "text": "–och vår konsponent har besökt en såndröner i enhet."
+          "start": 184,
+          "text": "Nu har man alltså något här väldigt kritiska punkten där regeringen till slut."
         },
         {
-          "start": 470,
-          "text": "I mörkret på ett fält i Nordröstra Ukraina står ni i ålongdistan's drönera redofar uppdrag."
+          "start": 189,
+          "text": "–och nästan om en tving av fram en förändring."
+        },
+        {
+          "start": 215,
+          "text": "Men det är fortfarande högster och hocklart vem som egentligen styr på lands författningstomstol i nu läget."
+        },
+        {
+          "start": 221,
+          "text": "Och också jag tänker att det är också hocklart om det här försöket från regeringen att förcera fram en förändring."
+        },
+        {
+          "start": 228,
+          "text": "Kommer att lyckas eller om det är i stället kommer att slå tillbaka mot att själva i form av anklagelse om att"
+        },
+        {
+          "start": 325,
+          "text": "Om jag kan säga traditionellar på politiska kraftet, det är det vi ser på."
+        },
+        {
+          "start": 330,
+          "text": "Det är en politiskt stivnarn gamla nya regeringen och presidenten och primärministern i praktiken."
+        },
+        {
+          "start": 335,
+          "text": "Vi ser det i det kommande franska valet, pandastellen och så."
         }
       ]
     },
     {
-      "source": "P1 Morgon",
-      "title": "Konflikten i SD, Finlands aktiva roll i världspolitiken och talmannens oväntade drag",
-      "date": "2026-10-30T05:59:00+01:00",
-      "link": "https://www.sverigesradio.se/avsnitt/konflikten-i-sd-finlands-aktiva-roll-i-varldspolitiken-och-talmannens-ovantade-drag",
-      "audio": "https://static-cdn.sr.se/laddahem/ljudit/p1/p1_morgon/2026/10/p1_morgon_20261030_0559_128.mp3",
+      "source": "Studio Ett",
+      "title": "Hårda slutförhandlingar vid COP17-mötet, intern strid i SD, Ryssland släpps in i hockey-VM",
+      "date": "2026-10-30T22:12:00+01:00",
+      "link": "https://www.sverigesradio.se/avsnitt/harda-slutforhandlingar-vid-cop17-motet-intern-strid-i-sd-ryssland-slapps-in-i-hockey-vm",
+      "audio": "https://static-cdn.sr.se/laddahem/ljudit/p1/studio_ett/2026/10/studio_ett_harda_slutforhandlingar_vid_co_20261030_2346045956.mp3",
       "transcribed": true,
-      "segments_count": 2602,
+      "segments_count": 1072,
       "excerpts": [
         {
-          "start": 15,
-          "text": "I VLOG går morgon och nåt är att morgon är ett blad annat kommentok."
+          "start": 0,
+          "text": "Du lysnar på och pett Sveriges radio."
+        },
+        {
+          "start": 6,
+          "text": "Tuppa förhandlingarna världens biologiska mångfaldiska reddags."
         },
         {
           "start": 21,
-          "text": "Det här med den pågående regeringssbildningen."
+          "text": "Vi får det direktra pot från ephetomp."
         },
         {
-          "start": 24,
-          "text": "Vi har även i Petmarons, men vi ska också prata om bråket inom Sverige."
+          "start": 31,
+          "text": "Det är ett hot mot demokratin."
         },
         {
-          "start": 36,
-          "text": "Vi ska få före med vår konsponent och den här blivit drönerbas i Ukraine."
+          "start": 33,
+          "text": "Om världens utförysningar av ryssland är på vägat,"
         },
         {
-          "start": 41,
-          "text": "Nordståndet mot att släppa in vänster, partiet i en regering–"
+          "start": 37,
+          "text": "till näsopen är få landet spelare i Sokivén."
         },
         {
-          "start": 51,
-          "text": "–ser ut att växa bland svenska folket."
+          "start": 40,
+          "text": "Det gäller att inålätt är studuat kväll, jag heter Martina Lindvall."
         },
         {
-          "start": 54,
-          "text": "Metalottervinningen från Krematorer har ett allmänna arvsfonden miljard belop."
+          "start": 44,
+          "text": "Just nu pågår intensiva slutförhandlingar vi effens topp möte för biologisk månfald."
         },
         {
-          "start": 61,
-          "text": "Vi besökte om Ukrain ska dra när en heter som atta kera mål in i Ryssland."
+          "start": 55,
+          "text": "15.000 deltagare från över 190 länder på plats i armenien syvestad i Jerevan."
         },
         {
-          "start": 71,
-          "text": "Och först om opinionen kring de pågående förskörknart bildarering."
+          "start": 183,
+          "text": "G-pengar till fattiga länder."
         },
         {
-          "start": 76,
-          "text": "Mådstandet mot att låta vänsterpartiet ta plats i en regering växer."
+          "start": 186,
+          "text": "För att dagens händt ganska mycket ekonomin under de senaste dissenina"
         },
         {
-          "start": 82,
-          "text": "2 av 5 väljerades i United till en sån utveckling."
+          "start": 191,
+          "text": "så många länder som ansågs var fattiga förut"
         },
         {
-          "start": 99,
-          "text": "men också till viss del bland sämtepotens väljer."
+          "start": 315,
+          "text": "Det här med att det tåg ju samtidigt som vi ser stora geopolitiska spännningar i världen."
         },
         {
-          "start": 102,
-          "text": "42 % av svenskarna vill inte att den stäparitetta plats i en regering."
+          "start": 321,
+          "text": "Hur har det dörm merkt sådant på förhandlingarna?"
         },
         {
-          "start": 107,
-          "text": "På bara ett halvår har siffran ökat med cirka 10 % i en heter."
+          "start": 324,
+          "text": "Jo, framför allt så märker man att vissa länder då och,"
         },
         {
-          "start": 112,
-          "text": "Flerval så positiv att till att vänsta partiet skulle sitta i regering innanvalet ännu efter."
+          "start": 331,
+          "text": "till exempel Ryssland är väldigt anty."
         },
         {
-          "start": 119,
-          "text": "John Torelle professor i statsvätenskap vid Stockholm's universitet tror att utvecklingen kan hänga ihop med den tryggar regeringssbildningsprocessen."
+          "start": 335,
+          "text": "Mika blir många de andra länderna är ganska vrän som och sen är i kvink."
         },
         {
-          "start": 127,
-          "text": "Att det skulle vara så att det fler som man fått ögonen på att vi hörte de partier som plockerar en regeringssbildning."
-        },
-        {
-          "start": 135,
-          "text": "kanske särskilt och en liten bit högre ut eller bland sämt i väljare."
+          "start": 354,
+          "text": "Ni som har trett i kraft som gör att man kan bilda med rinnan naturligtvis."
         }
       ]
     }
   ],
   "warnings": [
-    "Studio Ett: IncompleteRead: IncompleteRead(1721815 bytes read)",
+    "Ekot: TimeoutError: The read operation timed out",
     "P4 Östergötland: inga tillgängliga färska ljudavsnitt"
   ]
 }
