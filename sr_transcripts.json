@@ -1,6 +1,29 @@
 {
-  "updated": "2026-10-31T11:35:07.372278+01:00",
+  "updated": "2026-11-01T10:43:47.234455+01:00",
   "episodes": [
+    {
+      "source": "Ekot",
+      "title": "Ekot 08:00",
+      "date": "2026-11-01T08:00:00+01:00",
+      "link": "https://www.sverigesradio.se/avsnitt/2885045",
+      "audio": "https://static-cdn.sr.se/laddahem/ljudit/p1/ekot_0800/2026/11/ekot_0800_20261101_0800_128.mp3",
+      "transcribed": true,
+      "segments_count": 65,
+      "excerpts": [
+        {
+          "start": 64,
+          "text": "De efterdrydningen har smuffeligt."
+        },
+        {
+          "start": 66,
+          "text": "Regeringssbildningen ser jag att."
+        },
+        {
+          "start": 68,
+          "text": "Olgisk kristationen har tagit över."
+        }
+      ]
+    },
     {
       "source": "P1 Morgon",
       "title": "Konflikt om Polens författningsdomstol, EU:s väg framåt och datacenter i Texas",
@@ -169,7 +192,6 @@
     }
   ],
   "warnings": [
-    "Ekot: TimeoutError: The read operation timed out",
     "P4 Östergötland: inga tillgängliga färska ljudavsnitt"
   ]
 }
