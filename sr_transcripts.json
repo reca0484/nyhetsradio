@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-05T11:00:31.743921+01:00",
+  "updated": "2026-11-05T11:59:54.041569+01:00",
   "episodes": [
     {
       "source": "Ekot",
@@ -252,6 +252,6 @@
     }
   ],
   "warnings": [
-    "P4 Östergötland: inga tillgängliga färska ljudavsnitt"
+    "P4 Östergötland: URLError: <urlopen error [Errno -3] Temporary failure in name resolution>"
   ]
 }
