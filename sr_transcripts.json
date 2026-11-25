@@ -1,58 +1,50 @@
 {
-  "updated": "2026-11-25T20:08:31.551058+01:00",
+  "updated": "2026-11-25T20:52:26.679618+01:00",
   "episodes": [
     {
       "source": "Ekot",
       "title": "Ekot 17:45",
       "date": "2026-11-25T17:45:00+01:00",
       "link": "https://www.sverigesradio.se/avsnitt/2893339",
-      "audio": "https://static-cdn.sr.se/laddahem/ljudit/p1/ekot_1745/2026/11/ekot_1745_20261125_1745_128.mp3",
+      "audio": "https://static-cdn.sr.se/laddahem/podradio/2026/11/ekot_nyhetssandning_ekot_1745_20261125_2022300990.mp3",
       "transcribed": true,
-      "segments_count": 248,
+      "segments_count": 247,
       "excerpts": [
         {
-          "start": 0,
-          "text": "Här är Kvartis exeeko, med de senaste om regeringens bildningen och splitteringen inom santa partiet."
-        },
-        {
-          "start": 7,
-          "text": "Från USA har hårt att ha det presa den Trump, men nya toller mot EU, berigtiska hus håll och oroas,"
-        },
-        {
           "start": 30,
-          "text": "Flera källor som är kort pratat med beskriver det som att ledningen"
+          "text": "Flera Källor som är kortpratat med beskriver som att ledningen–"
         },
         {
           "start": 34,
-          "text": "nu vill få partiet att välja mellan extra val eller en höger regering."
+          "text": "–nur vill få partiet att välja mellan extraval eller en höger regering."
         },
         {
           "start": 39,
-          "text": "Efter i gårdagen stort möte där flera hundra personer från hela landet deltog."
+          "text": "Efter gårdagens stormöte är det flera hundra personer från hela landet deltog."
         },
         {
           "start": 175,
-          "text": "Är det rapporterar i hivabdelshade, kvar in rynblom och katar denna hälmersson?"
+          "text": "–är reporterar hivvabdelshade, kvar in rynblom och katarna hälmersson."
         },
         {
           "start": 181,
-          "text": "När regeller regeringssbildningen så pågår det samtal med landom tidigare"
+          "text": "När regeringens bildningen så pågår det samtal med landom tidigare allianspartina,"
         },
         {
-          "start": 186,
-          "text": "Allianspartina, det begrefter det moderaterna en olyfkristersson under"
-        },
-        {
-          "start": 190,
-          "text": "när han är möte journalistri riksdag in i dag."
+          "start": 187,
+          "text": "det begrefter det moderat ledaren Ulf Christianen är med journalister i Riksdag."
         },
         {
           "start": 193,
-          "text": "Det är att det sker möten."
+          "text": "Det sker möten diskussioner samtal till i med kärsavaridsförhandling."
+        },
+        {
+          "start": 197,
+          "text": "Det kan jag begrefter. Det är mycket mer än så."
         },
         {
           "start": 209,
-          "text": "Det tycker jag att det är mitt ansvar för kökar lägga till sak på liksdans bort."
+          "text": "Det tycker jag att det är mitt ansvar för kökar lägga till sak på de kallas bort."
         },
         {
           "start": 213,
@@ -60,27 +52,35 @@
         },
         {
           "start": 215,
-          "text": "Det är också en villian att pröva den möjligheten."
+          "text": "Jag har ju pratat att det är också en villian att pröva den möjligheten."
         },
         {
           "start": 219,
-          "text": "Sen måste vi vara i det här partet om att fyra partina självständigt och ställning till om man vill ha den regering."
+          "text": "Sen måste vi vara i parti i det här fart om en fyra partina."
+        },
+        {
+          "start": 223,
+          "text": "Säljstern i ett hostellning till om man vill ha den regering."
         },
         {
           "start": 227,
-          "text": "Moderaterna är olika kristersson."
+          "text": "Moderaterna är så urluffkrister."
         },
         {
           "start": 230,
-          "text": "Migrationsverket, pausar tills vidare visar utvisningar av unga vuxna and efter att en majoritet i riksdagen aviserat ny lagstiftning."
+          "text": "Migrationsverket, pausar till svider är visar utvisningar av unga vuxna,"
         },
         {
-          "start": 239,
-          "text": "Svarida mokraterna var det enda partiet som röstade emot lagförslaget,"
+          "start": 235,
+          "text": "andevter, att en majoritet är riksdagen aviserat ny lagstiftning."
         },
         {
-          "start": 322,
-          "text": "som har haft upp på att det stånd här, eller inte omfattas"
+          "start": 240,
+          "text": "Svarde de och kraterna var det enda partiet som röstade emot lagförslaget,"
+        },
+        {
+          "start": 319,
+          "text": "Det pratar vi någonstans kanske lite äldre,"
         }
       ]
     },
